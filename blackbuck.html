@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackbuck: The Grace of India's Grasslands</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #3a2d20; /* Dark earthy brown */
+            color: #f5f5dc; /* Cream/off-white */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #4a3e30; /* Slightly lighter earthy brown for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #8b7b6c; /* Medium brown */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #3a2d20; /* Dark earthy brown */
+            border: 4px solid #c2b280; /* Golden tan accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #8b7b6c;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #8b7b6c transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #8B4513 0% 35%, /* Habitat Loss/Fragmentation */
+                #A0522D 35% 65%, /* Poaching */
+                #CD853F 65% 80%, /* Feral Dogs */
+                #D2B48C 80% 90%, /* Disease/Inbreeding */
+                #BDB76B 90% 100% /* Other */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #6B8E23 0% 38%, /* Breeding Adults */
+                #8B9C4E 38% 60%, /* Sub-adults */
+                #A2B56F 60% 86%, /* Current year calves */
+                #C0D68A 86% 100% /* Rescued/Research */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #4A784A 0% 50%, /* Direct Species Impact */
+                #7B5C3E 50% 80%, /* Habitat Impact */
+                #A37A50 80% 100% /* Community & Outreach */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#3a2d20] text-[#f5f5dc]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Blackbuck: The Grace of India's Grasslands</h1>
+                <p class="text-lg md:text-2xl text-[#d4c6a0] mb-8 animate-fade-in delay-200">The blackbuck is a graceful, medium-sized antelope with striking sexual dimorphism. Males are dark brown to black with spiral horns, while females are light brown without horns. They are a living relic of an ancient evolutionary branch, perfectly adapted to the grasslands and semi-arid regions of the Indian subcontinent.</p>
+                <img src="photos/blackbuck_img1.jpg" alt="Blackbuck Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#d4c6a0] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The blackbuck's scientific classification highlights its unique position as the sole surviving member of the genus Antilope, making it taxonomically unique among antelopes.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Binomial Nomenclature</h4>
+                    <p class="text-lg md:text-xl text-[#d4c6a0]">Antilope cervicapra</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#d4c6a0]">Blackbuck, Indian Antelope</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Blackbuck's Enduring Legacy</h3>
+                <p class="text-lg md:text-xl text-[#d4c6a0] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the blackbuck's origins, historical significance, conservation challenges, and the efforts to save this iconic species.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Origin, History & Historical Significance</h4>
+                        <p class="text-[#d4c6a0]">Evolutionary Journey: The blackbuck represents one of the most ancient antelope lineages, having evolved in the Indian subcontinent millions of years ago. They are the sole surviving member of the genus Antilope, making them a living relic of an ancient evolutionary branch. Their adaptation to the grasslands and semi-arid regions of the Indian subcontinent has made them perfectly suited to the seasonal monsoon patterns and open landscape ecology.
+Scientific Discovery and Classification: The species was described and given its binomial name by Swedish zoologist Carl Linnaeus in the 10th edition of Systema Naturae in 1758. The blackbuck is the sole extant member of the genus Antilope, making it taxonomically unique among antelopes. Linnaeus's description was based on specimens and accounts from the Indian subcontinent, making the blackbuck one of the earliest scientifically described Indian mammals. The scientific classification has remained stable, though understanding of their evolutionary relationships within the antelope family has been refined through modern genetic studies.
+Cultural and Historical Significance: The blackbuck holds profound cultural and spiritual significance in Indian civilization, deeply embedded in religious practices, art, and traditional conservation ethics.
+Religious and Mythological Importance: Hindu Tradition: Sacred to several deities, particularly associated with the moon god Chandra. Bishnoi Community: Considered sacred by the Bishnoi people of Rajasthan, who have protected them for over 500 years. Buddhist Symbolism: Represents speed, grace, and the fleeting nature of life. Jain Philosophy: Embodies the principles of ahimsa (non-violence) and reverence for all life. Vedic Literature: Referenced in ancient texts as symbols of swiftness and beauty.
+Cultural Legacy: Mughal Hunting: Historically, the only animal fast enough to provide sport for cheetah coursing. Royal Courts: Featured in Mughal and Rajput miniature paintings. Folk Art: Central to traditional art forms across western and northern India. Literary Tradition: Celebrated in classical poetry for grace and speed. Modern Conservation: Became symbol of grassland ecosystem conservation.
+Historical Timeline: Ancient Period: Abundant across Indian plains, featured in Vedic literature. Medieval Period: Prized quarry for royal hunting with trained cheetahs. Mughal Era: Featured prominently in court art and hunting accounts. 1758: Scientific description by Carl Linnaeus. Colonial Period: Extensive hunting led to population decline. 1972: Protected under Wildlife Protection Act, Schedule I. Present: Population fragmented, concentrated in protected areas.
+Traditional Conservation and Modern Recognition: The blackbuck represents one of India's oldest conservation traditions through the Bishnoi community's protection. Their traditional conservation practices, dating back to the 15th century, provided a model for modern wildlife protection efforts.
+Modern Significance: Grassland Indicator: Flagship species for India's threatened grassland ecosystems. Cultural Symbol: Represents the connection between traditional values and modern conservation. Ecological Role: Key grazer maintaining grassland ecosystem health. Research Model: Important species for understanding antelope behavior and ecology.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Poaching Incidents and Threats</h4>
+                        <p class="text-[#d4c6a0]">Current Conservation Status: The IUCN List has declared this species as Nearly Threatened. The blackbuck faces severe population decline across its range, with significant regional variations in conservation success.
+Population Decline and Threats: It is one of the most graceful animals and used to be seen in thousands at the beginning of this century all throughout the plains of India except the Western coast. Due to extensive poaching and habitat loss, blackbuck populations have been reduced drastically.
+Recent data shows alarming trends: At present, the Blackbuck is only found in 18 districts of Rajasthan. In 2016, the recorded blackbuck population in the state was 27,818; however, in 2024, it decreased to 19,106, with the lowest population from Bharatpur and the highest from Nagaur district.
+Poaching Reality and Scale: These animals are hunted for their skin. Poachers have made this species of animal a main target from the 20th century. Blackbuck is a schedule I animal, a recipient of the highest protection level under the Wildlife Protection Act 1972. But the poor animal is being hunted barbarically by poachers for its meat and its horns. The horns are used for making herbal medicines and to cure skin related problems.
+Traditional Uses and Illegal Trade: Horn Trade: Male horns used in traditional medicine with no scientific basis. Meat Consumption: Hunted for meat in certain communities despite legal protection. Skin Trade: Hide used for leather products in illegal trade. Trophy Hunting: Historical and continued illegal hunting for sport.
+Contemporary Threats and Challenges: Threats such as hunting, stress, habitat loss, diseases, poaching, road accidents, habitat fragmentation, interspecific competition, predation pressure etc., have reduced the population size of blackbuck to a threatened level.
+Primary Current Threats: Habitat Loss: Conversion of grasslands to agriculture and development. Habitat Fragmentation: Roads, canals, and fencing fragmenting populations. Agricultural Conflicts: Crop raiding leading to retaliatory killing. Poaching: Continued illegal hunting despite legal protection. Feral Dogs: Increasing predation pressure from stray and feral dogs. Disease: Concentrated populations vulnerable to epidemic outbreaks. Inbreeding: Small isolated populations suffering genetic bottlenecks.
+Regional Challenges: Rajasthan: Largest population but declining rapidly due to habitat conversion. Gujarat: Stable populations in protected areas but agricultural expansion pressure. Haryana and Punjab: Severely fragmented populations, local extinctions. Maharashtra: Small relict populations in highly modified landscapes.
+Legal Protection and Enforcement: In India, hunting of blackbuck is prohibited under Schedule I of the Wildlife Protection Act of 1972. However, enforcement remains challenging due to: Vast Range Areas: Difficult to patrol extensive grassland habitats. Community Conflicts: Traditional hunting communities versus conservation laws. Low Conviction Rates: Weak prosecution leading to continued poaching. Resource Constraints: Limited forest department resources for protection.
+Cultural Protection Success: The blackbuck has significance in Hinduism; Indian and Nepali villagers do not harm the antelope. The most successful conservation has occurred in areas where traditional religious protection coincides with legal protection, particularly in Bishnoi community areas.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline (Sanctuary Perspective)</h4>
+                        <p class="text-[#d4c6a0]">Antilope Grassland Conservation Centre - Established 2015
+2015 - Foundation During Population Crisis: Specialized blackbuck rescue and breeding facility established in Rajasthan. Initial capacity for 40 blackbuck across 150-hectare grassland habitat. First major rescue: 18 blackbuck from severe drought and crop conflict situation. Partnership with Rajasthan Forest Department and Bishnoi community leaders.
+2016-2017 - Infrastructure and Community Building: Constructed large natural grassland enclosures with native grass species. Established veterinary unit specializing in antelope care and diseases. First successful breeding: 12 calves born from rescued population. Community education program launched in 45 villages around blackbuck habitats.
+2018-2019 - Research and Monitoring: GPS collar tracking program initiated for 25 released blackbuck. Behavioral study of blackbuck social structure and territorial behavior. Predator-proof fencing innovations to protect against feral dogs. First translocation success: Established new population in restored grassland.
+2020-2021 - Pandemic Impact and Innovation: COVID-19 lockdown reduced human disturbance, improved breeding success. Remote monitoring systems developed for minimal human intervention. Record breeding season: 34 calves born, 31 survived to independence. Traditional knowledge documentation project with Bishnoi elders.
+2022-2023 - Habitat Restoration Focus: Large-scale grassland restoration covering 800 hectares. Native grass seed collection and propagation program. Water point development for year-round habitat sustainability. First successful soft release: 22 blackbuck established in restored habitat.
+2024-2025 - Current Advanced Operations: State-of-the-art medical facility with specialized antelope protocols. Genetic management program preventing inbreeding in small populations. Climate change adaptation strategies for drought resilience. Leading research on grassland ecosystem restoration and blackbuck ecology.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Current Sanctuary Status</h4>
+                        <p class="text-[#d4c6a0]">At our conservation facility, we currently care for 4 rescued Kashmir stags.
+Our Residents: 2 adult males with injured antlers, recovering from vehicle strikes. 1 adult female with leg injury from wire snare, permanent resident. 1 sub-adult male orphaned as fawn, learning natural behaviors.
+Individual Stories: Dachigam: Adult male rescued after road accident near Srinagar-Leh highway. Shikara: Female found with infected wire snare wound, now serving as breeding female. Zabarwan: Young male hand-raised after mother killed by predators. Chinar: Elder male with damaged antler, educational ambassador.
+Breeding Program Participation: Genetic screening completed for all individuals. Artificial insemination capabilities established. Surrogate mothering protocols developed for orphaned fawns.
+Research Contributions: Nutritional studies optimizing wild population feeding. Disease monitoring preventing outbreaks in wild herds. Behavioral research improving human-wildlife conflict mitigation. Genetic banking preserving genetic diversity for future.
+Educational Outreach: Over 8,000 students educated about hangul conservation annually. 200+ conservation officers trained in deer handling and care. 50 local communities participating in protection programs. Tourist awareness programs reducing disturbance incidents.
+Release Program Success: 3 individuals successfully released to Dachigam since 2020. 100% survival rate for released animals (2-year tracking). Radio collar monitoring providing valuable behavior data. Genetic contribution to wild population confirmed through DNA analysis.
+Emergency Response Capabilities: 24/7 rescue hotline operational during critical seasons. Veterinary mobile unit serving Dachigam and surrounding areas. Rapid response team for human-wildlife conflict situations. Winter feeding programs supporting wild populations during harsh weather.
+The Kashmir stag stands as both a symbol of paradise and a species on the precipice. With fewer than 300 individuals remaining in the wild, every hangul matters. Their survival represents not just the conservation of a magnificent species, but the preservation of Kashmir's natural soul and cultural identity. Through dedicated protection, scientific research, and community engagement, we work toward a future where the call of the hangul once again echoes across Kashmir's alpine meadows.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#d4c6a0] max-w-lg">
+                        The blackbuck holds profound cultural and spiritual significance in Indian civilization, deeply embedded in religious practices, art, and traditional conservation ethics. It is sacred to several Hindu deities, particularly associated with the moon god Chandra. The Bishnoi community of Rajasthan has protected them for over 500 years, considering them sacred. In Buddhist symbolism, the blackbuck represents speed, grace, and the fleeting nature of life, while in Jain philosophy, it embodies the principles of ahimsa (non-violence). Historically, the blackbuck was the only animal fast enough to provide sport for cheetah coursing during the Mughal era and has been featured in Mughal and Rajput miniature paintings. It is also celebrated in classical poetry for its grace and speed. The blackbuck represents one of India's oldest conservation traditions through the Bishnoi community's protection, providing a model for modern wildlife protection efforts.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/blackbuck_img2.jpeg" alt="Blackbuck cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#d4c6a0]">
+                            35% Habitat Loss & Fragmentation<br>
+                            30% Poaching<br>
+                            15% Feral Dogs<br>
+                            10% Disease & Inbreeding<br>
+                            10% Other
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#d4c6a0]">
+                            38% Breeding Adults<br>
+                            22% Sub-adults<br>
+                            26% Current year calves<br>
+                            14% Rescued/Research
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#d4c6a0]">
+                            50% Direct Species Impact<br>
+                            30% Habitat Impact<br>
+                            20% Community & Outreach
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Antilope Grassland Conservation Centre Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2015</h4>
+                        <p class="text-[#d4c6a0]">Specialized blackbuck rescue and breeding facility established in Rajasthan.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2016-2017</h4>
+                        <p class="text-[#d4c6a0]">Constructed large natural grassland enclosures and launched community education program.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2018-2019</h4>
+                        <p class="text-[#d4c6a0]">GPS collar tracking program initiated and first translocation success achieved.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2020-2021</h4>
+                        <p class="text-[#d4c6a0]">COVID-19 lockdown reduced human disturbance, leading to record breeding season.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2022-2023</h4>
+                        <p class="text-[#d4c6a0]">Large-scale grassland restoration covering 800 hectares and first successful soft release.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2024-2025</h4>
+                        <p class="text-[#d4c6a0]">State-of-the-art medical facility and genetic management program implemented.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#2a2018] text-[#d4c6a0] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#f5f5dc] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#f5f5dc] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#f5f5dc] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#d4c6a0]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

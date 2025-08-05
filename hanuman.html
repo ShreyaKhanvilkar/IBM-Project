@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanuman Langur: Conservation Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #4a4a4a; /* Muted dark grey */
+            color: #d0d0d0; /* Lighter grey */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #5a5a5a; /* Slightly darker grey for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #888888; /* Medium grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #4a4a4a; /* Muted dark grey */
+            border: 4px solid #9bb0c4; /* Muted blue accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #888888;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #888888 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #cc5500 0% 30%, /* Feathers */
+                #ff6600 30% 50%, /* Meat & Fat */
+                #ff9933 50% 60%, /* Ashes & Body Parts */
+                #6b7280 60% 80%, /* Habitat Loss */
+                #9ca3af 80% 90%, /* Pesticide Poisoning */
+                #d1d5db 90% 100% /* Retaliatory Killings */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #6b7280 0% 28%, /* Breeding Adults */
+                #9ca3af 28% 47%, /* Young Adults */
+                #d1d5db 47% 84%, /* Juveniles */
+                #e5e7eb 84% 100% /* Under Treatment + Non-releasable */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #34d399 0% 63%, /* Successfully Released */
+                #10b981 63% 93%, /* Community & Habitat Impact */
+                #60a5fa 93% 100% /* Legal & Other Support */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#4a4a4a] text-[#d0d0d0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Hanuman Langur: The Sacred Primate of India</h1>
+                <p class="text-lg md:text-2xl text-[#a0a0a0] mb-8 animate-fade-in delay-200">The Hanuman langur, named after the revered monkey god, is one of India's most widespread and adaptable primate species. Thriving from Himalayan foothills to urban temples, they symbolize strength, devotion, and a unique coexistence with human communities.</p>
+                <img src="photos/hanuman_img1.jpg" alt="Hanuman Langur Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#a0a0a0] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Hanuman langur's classification reflects its unique position as a widely distributed and adaptable primate, with its name deeply rooted in Indian culture.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Binomial Nomenclature</h4>
+                    <p class="text-lg md:text-xl text-[#a0a0a0]">Semnopithecus entellus (Dufresne, 1797)</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#a0a0a0]">Hanuman Langur, Northern Plains Gray Langur, Sacred Langur, Bengal Sacred Langur</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Langur's Enduring Story</h3>
+                <p class="text-lg md:text-xl text-[#a0a0a0] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the Hanuman langur's origins, its profound cultural significance, the challenges it faces, and the conservation efforts underway.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Their Story - Origins, History & Historical Significance</h4>
+                        <p class="text-[#a0a0a0]">Ancient Evolutionary Heritage: The Hanuman langur represents one of the most successful primate adaptations in the Indian subcontinent. Members of the genus Semnopithecus are terrestrial, inhabiting forest, open lightly wooded habitats, and urban areas on the Indian subcontinent. These remarkable primates have evolved over millions of years to become one of the most widespread and adaptable monkey species in Asia, thriving in diverse habitats from the Himalayan foothills to tropical plains.
+The Sacred Connection - Hanuman's Legacy: The species derives its common name from one of Hinduism's most beloved deities - Hanuman, the monkey god who serves as the ultimate symbol of devotion, strength, and courage. In Hindu mythology, Hanuman is the monkey commander of the monkey army, with his exploits narrated in the great Hindu Sanskrit poem the Ramayana. He is revered across several cultures in India and Southeast Asia, embodying the ideal devotee and a symbol of strength, loyalty, bravery, and righteousness.
+Living Mythology: Many pious Hindus regard the black ("burnt") skin of the Hanuman langurs as proof that they are the living descendants of the monkey god Hanuman. The dark coloration on their faces and hands call to mind the burns that Hanuman suffered on his adventures. This sacred connection has afforded these primates unique protection and reverence throughout Indian history.
+Cultural Integration and Temple Life: Regarded as sacred in Hinduism, it spends a good deal of time on the ground and roams at will in villages and temples. For centuries, Hanuman langurs have been integral to India's temple culture, living peacefully alongside worshippers and priests. His story is celebrated across India today, with numerous temples featuring statues dedicated to him, much like other Hindu gods.
+Historical Documentation and Scientific Recognition: The species was first scientifically described by French naturalist Dufresne in 1797, making it one of the earliest documented Asian primates. Colonial naturalists were fascinated by these intelligent, social monkeys that seemed to bridge the gap between wild animals and sacred beings in Indian society.
+Symbol of Coexistence: Throughout Indian history, Hanuman langurs have represented a unique model of human-wildlife coexistence. Unlike many other primate species that fled from human expansion, these adaptable langurs learned to thrive alongside growing human populations, becoming living symbols of harmony between nature and civilization.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural Significance</h4>
+                        <p class="text-[#a0a0a0]">Cultural and Historical Relevance:
+National Symbol: Declared India’s National Bird in 1963, the Indian Peacock embodies grace, beauty, joy, and pride.
+In Religion and Mythology:
+Lord Krishna: Adorns a peacock feather in his crown, symbolizing beauty and divine love.
+Goddess Saraswati: Rides a peacock, representing the fusion of wisdom and beauty.
+Lord Kartikeya (Murugan): His mount, the peacock, is a symbol of valor and victory.
+Goddess Lakshmi: The bird is associated with prosperity and good fortune.
+Buddhism: Represents compassion and vigilance in various Buddhist texts and temples.
+Ancient Texts and Artistic Legacy:
+Vedic Literature: Called "Mayura" and "Shikhi," celebrated as a celestial bird.
+Epics: Referenced in the Ramayana and Mahabharata.
+Sanskrit Poetry: Glorified in Kalidasa’s Meghaduta.
+Buddhist Jataka Tales: Used as metaphors of spiritual watchfulness and grace.
+Sangam Era: Featured in 1st-century Tamil classical literature.
+Historical Timeline:
+3000 BCE: First artistic depictions in the Indus Valley Civilization.
+500 BCE: Mentioned in Buddhist literature.
+Medieval Era: Extensively featured in Mughal court art and architecture.
+1758: Taxonomically classified by Linnaeus.
+1963: Officially designated as the National Bird of India.
+Cultural and International Symbolism:
+India: Seen in temple carvings, folk songs, palace motifs, and dance forms (e.g., Bharatanatyam).
+Greece & Rome: Sacred to Hera and a symbol of immortality.
+Christianity: Represents resurrection and eternal life in early art.
+Persia & China: Emblem of dignity, immortality, and prosperity.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Threats to Survival</h4>
+                        <p class="text-[#a0a0a0]">Current Conservation Status: Hanuman langurs are listed as a species of "least concern" on the IUCN Red List of Threatened Species. It was previously listed as near threatened in 2004. Bengal Hanuman langurs are not endangered. This is because they are spread over a wide area and are good at adapting so they can survive in many different habitats.
+Human-Wildlife Conflict Challenges: Despite their sacred status, increasing urbanization has created new challenges. Hanuman langurs are known to raid crops and steal food from people's homes. This behavior, while natural foraging, sometimes leads to conflict with farmers and urban residents who view them as pests rather than sacred beings.
+Habitat Pressure and Fragmentation: Rapid urban expansion and intensive agriculture are reducing natural forest habitats, forcing langur troops to rely increasingly on human-modified landscapes. While they adapt well, this dependency makes them vulnerable to habitat quality changes and human intolerance.
+Population Density Variations: A three-year survey at Shimla showed an increasing trend in their populations, with about 120,000 Hanuman langurs in some regions. However, population densities vary significantly across their range, with some areas experiencing declines due to local pressures.
+Legal Protection Challenges: Bengal Hanuman langurs are an officially protected species in India. So people are not allowed to hunt them. However, enforcement can be challenging, especially in remote areas where traditional hunting practices may persist.
+Disease and Genetic Concerns: High population densities in some urban areas can lead to disease outbreaks, while habitat fragmentation may isolate populations and reduce genetic diversity over time.
+Climate Change Adaptation: Changing rainfall patterns and temperature fluctuations affect food availability and breeding cycles, requiring these adaptable primates to continuously adjust their behavior and ranging patterns.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline & Milestones</h4>
+                        <p class="text-[#a0a0a0]">1972: Wildlife Protection Act: Hanuman langurs included under Schedule II protection. Hunting and capture prohibited with legal penalties. Sacred status formally recognized in conservation law.
+1980: Temple Monkey Management Programs: Guidelines developed for temple langur populations. Feeding protocols established to reduce human-wildlife conflict. Veterinary care programs initiated in major temple complexes.
+1995: Urban Wildlife Management Initiative: City-specific management plans developed. Relocation protocols for problem troops established. Public awareness campaigns launched.
+2002: Primate Behavioral Research Expansion: Long-term field studies initiated across multiple states. Social structure and ecology research programs established. Conservation genetics studies launched.
+2008: Community Coexistence Programs: Farmer education initiatives to reduce crop raiding. Alternative livelihood programs in high-conflict areas. Traditional ecological knowledge documentation projects.
+2015: Habitat Corridor Creation: Forest department initiatives to connect fragmented habitats. Tree planting programs along langur movement routes. Urban green space development with native species.
+2020: Digital Monitoring Systems: GPS collar tracking studies for urban populations. Citizen science apps for langur sighting reports. Database development for population monitoring.
+2024: Climate Adaptation Research: Studies on changing phenology and food availability. Assisted migration corridor planning. Temperature and precipitation impact assessments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#a0a0a0] max-w-lg">
+                        The Hanuman langur derives its common name from one of Hinduism's most beloved deities - Hanuman, the monkey god who serves as the ultimate symbol of devotion, strength, and courage. In Hindu mythology, Hanuman is the monkey commander of the monkey army, with his exploits narrated in the great Hindu Sanskrit poem the Ramayana. He is revered across several cultures in India and Southeast Asia, embodying the ideal devotee and a symbol of strength, loyalty, bravery, and righteousness. Many pious Hindus regard the black ("burnt") skin of the Hanuman langurs as proof that they are the living descendants of the monkey god Hanuman. The dark coloration on their faces and hands call to mind the burns that Hanuman suffered on his adventures. This sacred connection has afforded these primates unique protection and reverence throughout Indian history. For centuries, Hanuman langurs have been integral to India's temple culture, living peacefully alongside worshippers and priests. His story is celebrated across India today, with numerous temples featuring statues dedicated to him, much like other Hindu gods. Throughout Indian history, Hanuman langurs have represented a unique model of human-wildlife coexistence.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/hanuman_img2.png" alt="Hanuman Langurs on temple steps" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Threat Categories</h4>
+                        <p class="text-[#a0a0a0]">
+                            30% Poaching for Feathers<br>
+                            20% Poaching for Meat & Fat<br>
+                            10% Poaching for Ashes & Body Parts<br>
+                            20% Habitat Loss<br>
+                            10% Pesticide Poisoning<br>
+                            10% Retaliatory Killings
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#a0a0a0]">
+                            28% Breeding Adults<br>
+                            19% Young Adults<br>
+                            37% Juveniles<br>
+                            16% Under Treatment + Non-releasable
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#a0a0a0]">
+                            63% Successfully Released<br>
+                            30% Community & Habitat Impact<br>
+                            7% Legal & Other Support
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Conservation Timeline & Milestones</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">1972</h4>
+                        <p class="text-[#a0a0a0]">Wildlife Protection Act: Hanuman langurs included under Schedule II protection. Hunting and capture prohibited with legal penalties. Sacred status formally recognized in conservation law.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">1980</h4>
+                        <p class="text-[#a0a0a0]">Temple Monkey Management Programs: Guidelines developed for temple langur populations. Feeding protocols established to reduce human-wildlife conflict. Veterinary care programs initiated in major temple complexes.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">1995</h4>
+                        <p class="text-[#a0a0a0]">Urban Wildlife Management Initiative: City-specific management plans developed. Relocation protocols for problem troops established. Public awareness campaigns launched.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2002</h4>
+                        <p class="text-[#a0a0a0]">Primate Behavioral Research Expansion: Long-term field studies initiated across multiple states. Social structure and ecology research programs established. Conservation genetics studies launched.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2008</h4>
+                        <p class="text-[#a0a0a0]">Community Coexistence Programs: Farmer education initiatives to reduce crop raiding. Alternative livelihood programs in high-conflict areas. Traditional ecological knowledge documentation projects.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2015</h4>
+                        <p class="text-[#a0a0a0]">Habitat Corridor Creation: Forest department initiatives to connect fragmented habitats. Tree planting programs along langur movement routes. Urban green space development with native species.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2020</h4>
+                        <p class="text-[#a0a0a0]">Digital Monitoring Systems: GPS collar tracking studies for urban populations. Citizen science apps for langur sighting reports. Database development for population monitoring.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2024</h4>
+                        <p class="text-[#a0a0a0]">Climate Adaptation Research: Studies on changing phenology and food availability. Assisted migration corridor planning. Temperature and precipitation impact assessments.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#3a3a3a] text-[#a0a0a0] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#d0d0d0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#d0d0d0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#d0d0d0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#a0a0a0]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kashmir Red Stag (Hangul) - Conservation Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* Dark blue-grey for mountains */
+            color: #e5e7eb; /* Light grey */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #374151; /* Medium blue-grey for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #6b7280; /* Grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #1f2937; /* Dark blue-grey */
+            border: 4px solid #9ca3af; /* Light grey accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #6b7280;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #6b7280 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #ef4444 0% 90%, /* Historical Decline */
+                #f97316 90% 95%, /* Current Poaching */
+                #eab308 95% 100% /* Habitat Loss/Fragmentation */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #3b82f6 0% 50%, /* Adult Males */
+                #60a5fa 50% 75%, /* Adult Female */
+                #93c5fd 75% 100% /* Sub-adult Male */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #10b981 0% 50%, /* Released & Thriving */
+                #34d399 50% 80%, /* Educated Students/Officers */
+                #6ee7b7 80% 100% /* Community Participation */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#1f2937] text-[#e5e7eb]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Kashmir Red Stag (Hangul) - Conservation Profile</h1>
+                <p class="text-lg md:text-2xl text-[#9ca3af] mb-8 animate-fade-in delay-200">The Kashmir stag, known locally as hangul, represents one of the most ancient deer lineages of the Indian subcontinent. It is a distinct subspecies that evolved in isolation within the high-altitude ecosystems of the Kashmir Valley, perfectly adapted to the region's harsh winters and short alpine summers.</p>
+                <img src="photos/hangul_img1.avif" alt="Kashmir Red Stag Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#9ca3af] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Kashmir stag's scientific classification highlights its unique position as a distinct subspecies, a testament to its isolated evolution in the Himalayas.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Binomial Nomenclature</h4>
+                    <p class="text-lg md:text-xl text-[#9ca3af]">Cervus hanglu hanglu (Wagner, 1844)</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#9ca3af]">Kashmir Stag, Kashmir Red Deer, Hangul</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Hangul's Ancient Legacy</h3>
+                <p class="text-lg md:text-xl text-[#9ca3af] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the Hangul's origins, historical significance, conservation challenges, and the efforts to save this critically endangered species.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Origin and History</h4>
+                        <p class="text-[#9ca3af]">Ancient Lineage of the Himalayas: The Kashmir stag, known locally as hangul, represents one of the most ancient deer lineages of the Indian subcontinent. Originally believed to be a subspecies of the European red deer, recent genetic studies have revealed it to be a distinct subspecies that evolved in isolation within the high-altitude ecosystems of the Kashmir Valley. These magnificent cervids have roamed the pristine alpine meadows and temperate forests of Kashmir for thousands of years, becoming perfectly adapted to the region's harsh winters and short alpine summers.
+Royal Heritage and Mughal Chronicles: The hangul holds a place of honor in Kashmir's royal history and cultural heritage. During the Mughal era (1586-1751), Emperor Akbar and his successors were enchanted by these majestic deer during their summer sojourns to Kashmir. Mughal court records and miniature paintings frequently depicted hangul as symbols of Kashmir's untamed beauty and abundance. The deer became emblematic of the valley's reputation as "paradise on earth" - a sentiment captured in the famous Persian couplet about Kashmir.
+Symbol of Kashmir's Natural Majesty: For centuries, the hangul has been woven into the fabric of Kashmiri culture, folklore, and artistic traditions. Local shepherds and communities regarded these deer as harbingers of good fortune and symbols of the valley's pristine wilderness. Traditional Kashmiri poetry and folk songs celebrated the grace and beauty of the hangul, often using them as metaphors for freedom, elegance, and the untamed spirit of the mountains.
+Scientific Discovery and Recognition: The species was first scientifically described by German naturalist Moritz Wagner in 1844, marking its formal entry into zoological literature. British colonial naturalists were fascinated by these deer, noting their unique characteristics that distinguished them from other red deer populations. The hangul's magnificent antlers, with their distinctive 11-16 points, became legendary among naturalists and trophy hunters of the colonial era.
+State Animal Status and National Pride: In recognition of its significance, the hangul was designated as the state animal of Jammu and Kashmir, cementing its status as a living symbol of the region's natural heritage. The species represents not just Kashmir's biodiversity but also the resilience and endurance of life in one of the world's most beautiful yet challenging environments.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Challenges and Threats</h4>
+                        <p class="text-[#9ca3af]">Catastrophic Population Decline: The hangul's story is one of dramatic decline from abundance to near-extinction. In the 1940s, there were between 3,000 and 5,000 individuals, but the population has grown marginally to 289 in 2023 from 197 in 2004. The species is categorized as Critically Endangered by the IUCN Red List.
+Historical Hunting and Poaching Pressures: Extensive hunting during the colonial period and subsequent decades severely impacted hangul populations. The population has declined drastically due to habitat loss, overgrazing by domestic livestock, poaching, predation, diseases and human-wildlife conflicts. Even today, sporadic poaching incidents continue to threaten the small remaining population.
+Habitat Degradation and Fragmentation: The Kashmir valley's increasing human population and infrastructure development have significantly reduced and fragmented hangul habitat. Conversion of alpine meadows for agriculture, illegal grazing by domestic livestock, and encroachment into protected areas have compressed the available habitat to a few isolated pockets.
+Impact of Conflict and Militancy: The emergence of militancy followed by security force actions also negatively impacted conservation efforts. The decades of conflict in Kashmir disrupted wildlife management, reduced tourism-based conservation funding, and limited access for researchers and conservationists to critical habitats.
+Competition and Disease: Domestic livestock grazing in hangul habitats creates competition for food resources and introduces diseases. Overgrazing by cattle and sheep has degraded the quality of alpine meadows that hangul depend upon for seasonal feeding.
+Climate Change Vulnerabilities: Rising temperatures are altering the alpine ecosystem dynamics, affecting vegetation patterns and seasonal migration routes. Changes in snowfall patterns impact winter survival and breeding success.
+Small Population Vulnerabilities: Despite protection, the species has been unable to increase its numbers, and population viability analysis reveals extinction risk without intervention. The small population size makes hangul vulnerable to genetic bottlenecks, disease outbreaks, and environmental catastrophes.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline & Milestones</h4>
+                        <p class="text-[#9ca3af]">1951: Dachigam National Park Establishment: Primary hangul habitat designated as protected area. Initial protection measures implemented. Research and monitoring programs initiated.
+1972: Wildlife Protection Act: Hangul listed in Schedule I of the Wildlife Protection Amendment Act. Hunting completely prohibited with severe penalties. Legal framework for habitat protection established.
+1981: Project Hangul Launched: Comprehensive conservation program initiated. Habitat improvement measures implemented. Anti-poaching patrol units established.
+1989: Critical Population Assessment: Systematic census revealing alarming decline. Emergency conservation measures implemented. International attention drawn to species' plight.
+1995: Habitat Restoration Initiative: Meadow rehabilitation programs launched. Livestock grazing restrictions enforced. Water source development for deer.
+2004: Population Recovery Program: Intensive monitoring using modern techniques. Genetic studies initiated for population health. Community engagement programs launched.
+2012: Enhanced Protection Measures: Increased patrolling and surveillance. Technology integration for monitoring. Veterinary care programs established.
+2018: Overa-Aru Sanctuary Protection: Small population protection in Overa-Aru Wildlife Sanctuary in south Kashmir. Secondary habitat conservation prioritized. Corridor creation between habitats initiated.
+2023: Population Stabilization Efforts: Modern census techniques showing marginal recovery. Captive breeding program considerations. Climate change adaptation strategies developed.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Current Sanctuary Status</h4>
+                        <p class="text-[#9ca3af]">At our conservation facility, we currently care for 4 rescued Kashmir stags.
+Our Residents:
+2 adult males with injured antlers, recovering from vehicle strikes
+1 adult female with leg injury from wire snare, permanent resident
+1 sub-adult male orphaned as fawn, learning natural behaviors
+Individual Stories:
+Dachigam: Adult male rescued after road accident near Srinagar-Leh highway
+Shikara: Female found with infected wire snare wound, now serving as breeding female
+Zabarwan: Young male hand-raised after mother killed by predators
+Chinar: Elder male with damaged antler, educational ambassador
+Breeding Program Participation:
+Genetic screening completed for all individuals
+Artificial insemination capabilities established
+Surrogate mothering protocols developed for orphaned fawns
+Research Contributions:
+Nutritional studies optimizing wild population feeding
+Disease monitoring preventing outbreaks in wild herds
+Behavioral research improving human-wildlife conflict mitigation
+Genetic banking preserving genetic diversity for future
+Educational Outreach:
+Over 8,000 students educated about hangul conservation annually
+200+ conservation officers trained in deer handling and care
+50 local communities participating in protection programs
+Tourist awareness programs reducing disturbance incidents
+Release Program Success:
+3 individuals successfully released to Dachigam since 2020
+100% survival rate for released animals (2-year tracking)
+Radio collar monitoring providing valuable behavior data
+Genetic contribution to wild population confirmed through DNA analysis
+Emergency Response Capabilities:
+24/7 rescue hotline operational during critical seasons
+Veterinary mobile unit serving Dachigam and surrounding areas
+Rapid response team for human-wildlife conflict situations
+Winter feeding programs supporting wild populations during harsh weather
+The Kashmir stag stands as both a symbol of paradise and a species on the precipice. With fewer than 300 individuals remaining in the wild, every hangul matters. Their survival represents not just the conservation of a magnificent species, but the preservation of Kashmir's natural soul and cultural identity. Through dedicated protection, scientific research, and community engagement, we work toward a future where the call of the hangul once again echoes across Kashmir's alpine meadows.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#9ca3af] max-w-lg">
+                        The hangul holds a place of honor in Kashmir's royal history and cultural heritage. During the Mughal era (1586-1751), Emperor Akbar and his successors were enchanted by these majestic deer. Mughal court records and miniature paintings frequently depicted hangul as symbols of Kashmir's untamed beauty and abundance. The deer became emblematic of the valley's reputation as "paradise on earth." For centuries, the hangul has been woven into the fabric of Kashmiri culture, folklore, and artistic traditions. Local shepherds and communities regarded these deer as harbingers of good fortune and symbols of the valley's pristine wilderness. Traditional Kashmiri poetry and folk songs celebrated the grace and beauty of the hangul, often using them as metaphors for freedom, elegance, and the untamed spirit of the mountains. In recognition of its significance, the hangul was designated as the state animal of Jammu and Kashmir.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/hangul_img2.png" alt="Kashmir Red Stag in cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Population Decline & Threats</h4>
+                        <p class="text-[#9ca3af]">
+                            90% Historical Decline<br>
+                            5% Current Poaching<br>
+                            5% Habitat Loss/Fragmentation
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Current Sanctuary Population</h4>
+                        <p class="text-[#9ca3af]">
+                            2 Adult Males (50%)<br>
+                            1 Adult Female (25%)<br>
+                            1 Sub-adult Male (25%)
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Program Impact</h4>
+                        <p class="text-[#9ca3af]">
+                            50% Released & Thriving<br>
+                            30% Educated Students/Officers<br>
+                            20% Community Participation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Conservation Timeline & Milestones</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">1951</h4>
+                        <p class="text-[#9ca3af]">Dachigam National Park established as primary hangul habitat.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">1972</h4>
+                        <p class="text-[#9ca3af]">Hangul listed in Schedule I of the Wildlife Protection Amendment Act, prohibiting hunting.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">1981</h4>
+                        <p class="text-[#9ca3af]">Project Hangul launched, initiating comprehensive conservation programs.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">1989</h4>
+                        <p class="text-[#9ca3af]">Systematic census reveals alarming population decline, leading to emergency measures.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">1995</h4>
+                        <p class="text-[#9ca3af]">Habitat restoration programs launched, including meadow rehabilitation and grazing restrictions.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2004</h4>
+                        <p class="text-[#9ca3af]">Population recovery program initiated with intensive monitoring and genetic studies.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2012</h4>
+                        <p class="text-[#9ca3af]">Enhanced protection measures implemented, with increased patrolling and technology integration.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2018</h4>
+                        <p class="text-[#9ca3af]">Overa-Aru Wildlife Sanctuary prioritized for small population protection and corridor creation.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2023</h4>
+                        <p class="text-[#9ca3af]">Modern census techniques show marginal recovery. Captive breeding and climate adaptation strategies considered.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#111827] text-[#9ca3af] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#e5e7eb] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e5e7eb] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e5e7eb] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#9ca3af]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

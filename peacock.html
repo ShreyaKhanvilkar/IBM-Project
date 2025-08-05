@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Peacock: The Living Jewel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Dark blue-grey */
+            color: #e2e8f0; /* Light grey */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #1e293b; /* Darker blue-grey for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #334155; /* Medium blue-grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #0f172a; /* Dark blue-grey */
+            border: 4px solid #60a5fa; /* Light blue accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #334155;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #334155 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #007bff 0% 30%, /* Feathers */
+                #28a745 30% 50%, /* Meat & Fat */
+                #ffc107 50% 60%, /* Ashes & Body Parts */
+                #dc3545 60% 80%, /* Habitat Loss */
+                #fd7e14 80% 90%, /* Pesticide Poisoning */
+                #6f42c1 90% 100% /* Retaliatory Killings */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #007bff 0% 31%, /* Breeding Adults */
+                #60a5fa 31% 52%, /* Young Adults */
+                #93c5fd 52% 92%, /* Juveniles */
+                #bfdbfe 92% 100% /* Under Treatment + Non-releasable */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #10b981 0% 63%, /* Successfully Released */
+                #34d399 63% 93%, /* Community & Habitat Impact */
+                #6ee7b7 93% 100% /* Legal/Other */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-[#e2e8f0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Indian Peacock: The Living Jewel of India's Cultural and Natural Legacy</h1>
+                <p class="text-lg md:text-2xl text-[#94a3b8] mb-8 animate-fade-in delay-200">The Indian peacock (Pavo cristatus), India's national bird, is a living jewel of its cultural and natural legacy. This magnificent bird, a member of the pheasant family, is an ancient emblem of beauty, pride, and spiritual significance that has been revered for thousands of years.</p>
+                <img src="photos/peacock_img1.jpg" alt="Indian Peacock Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Taxonomy and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#94a3b8] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Indian peacock's scientific name, Pavo cristatus, translates to "crested peacock," a nod to the distinctive fan-like crest on its head. The genus name Pavo has a rich etymology, originating from the Latin word for peacock, which can be traced back through Greek and ancient Persian, showing how the bird’s fame spread across ancient trade routes.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Classification</h4>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Scientific Name: Pavo cristatus</p>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Family: Phasianidae (Pheasants, Partridges, and allies)</p>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Order: Galliformes</p>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Kingdom: Animalia</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Peacock's Enduring Legacy</h3>
+                <p class="text-lg md:text-xl text-[#94a3b8] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the peacock's evolutionary journey, its profound cultural significance, and the challenges it faces today.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Their Story - Origin, History & Historical Significance</h4>
+                        <p class="text-[#94a3b8]">Evolutionary Journey: The Indian peafowl belongs to the ancient family Phasianidae, which evolved during the Oligocene epoch approximately 30 million years ago. These magnificent birds developed their elaborate plumage through sexual selection, where females chose males with the most impressive displays, leading to the evolution of increasingly spectacular tail feathers over millions of years.
+Scientific Discovery and Classification: The Indian peafowl was formally described in 1758 by the Swedish naturalist Carl Linnaeus in the tenth edition of his Systema Naturae under its current binomial name Pavo cristatus. The genus name Pavo is Latin for "peacock," which came from the Greek word taos derived from Persian tavus, reflecting the ancient trade routes through which these birds were known across civilizations.
+Cultural and Historical Significance: The peacock holds an unparalleled position in Indian culture, spirituality, and history. No other bird is as deeply woven into the fabric of Indian civilization as the peacock.
+Religious and Mythological Importance:
+National Bird Status: Declared India's National Bird in 1963, symbolizing grace, beauty, joy, and love
+Hindu Tradition: Sacred to Lord Krishna, often depicted with peacock feathers in his crown
+Vehicle of Goddess Saraswati: The peacock is the vahana (vehicle) of the goddess of knowledge and arts
+Kartikeya's Mount: Lord Murugan (Kartikeya) rides a peacock, symbolizing the victory of good over evil
+Lakshmi's Symbol: Associated with Goddess Lakshmi, representing prosperity and good fortune
+Ancient Texts and Literature:
+Vedic Period: Referenced in ancient Sanskrit texts as "Mayura" and "Shikhi"
+Ramayana and Mahabharata: Featured prominently in epic literature
+Classical Poetry: Celebrated by poets like Kalidasa in works like "Meghaduta"
+Buddhist Texts: Symbol of compassion and watchfulness in Buddhist traditions
+Historical Timeline:
+3000 BCE: Earliest artistic depictions in Indus Valley Civilization
+1500 BCE: First references in Vedic literature
+500 BCE: Featured in Buddhist Jataka tales
+1st Century CE: Mentioned in Tamil Sangam literature
+Medieval Period: Integral to Mughal art and architecture
+1758: Scientific description by Carl Linnaeus
+1963: Designated as India's National Bird
+Cultural Legacy and Symbolism
+Throughout Indian history, the peacock has represented:
+Monsoon Herald: Their calls traditionally signal the arrival of monsoon rains
+Royal Symbol: Used in Mughal architecture, Mysore Palace, and countless royal emblems
+Artistic Inspiration: Featured in classical dance forms like Bharatanatyam and Kathak
+Literary Metaphor: Symbol of beauty, pride, and divine grace in poetry and literature
+Folk Traditions: Central to countless folk tales, songs, and festivals across India
+International Recognition:
+Ancient Greece: Peacocks were sacred to Hera, queen of gods
+Roman Empire: Symbol of immortality and resurrection
+Christianity: Represented eternal life in early Christian art
+Chinese Culture: Symbol of dignity and beauty
+Persian Art: Featured in carpets and miniature paintings</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural and Historical Relevance</h4>
+                        <p class="text-[#94a3b8]">National Symbol: Declared India’s National Bird in 1963, the Indian Peacock embodies grace, beauty, joy, and pride.
+In Religion and Mythology:
+Lord Krishna: Adorns a peacock feather in his crown, symbolizing beauty and divine love.
+Goddess Saraswati: Rides a peacock, representing the fusion of wisdom and beauty.
+Lord Kartikeya (Murugan): His mount, the peacock, is a symbol of valor and victory.
+Goddess Lakshmi: The bird is associated with prosperity and good fortune.
+Buddhism: Represents compassion and vigilance in various Buddhist texts and temples.
+Ancient Texts and Artistic Legacy:
+Vedic Literature: Called "Mayura" and "Shikhi," celebrated as a celestial bird.
+Epics: Referenced in the Ramayana and Mahabharata.
+Sanskrit Poetry: Glorified in Kalidasa’s Meghaduta.
+Buddhist Jataka Tales: Used as metaphors of spiritual watchfulness and grace.
+Sangam Era: Featured in 1st-century Tamil classical literature.
+Historical Timeline:
+3000 BCE: First artistic depictions in the Indus Valley Civilization.
+500 BCE: Mentioned in Buddhist literature.
+Medieval Era: Extensively featured in Mughal court art and architecture.
+1758: Taxonomically classified by Linnaeus.
+1963: Officially designated as the National Bird of India.
+Cultural and International Symbolism:
+India: Seen in temple carvings, folk songs, palace motifs, and dance forms (e.g., Bharatanatyam).
+Greece & Rome: Sacred to Hera and a symbol of immortality.
+Christianity: Represents resurrection and eternal life in early art.
+Persia & China: Emblem of dignity, immortality, and prosperity.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Threats and Poaching Incidents</h4>
+                        <p class="text-[#94a3b8]">Current Conservation Status: The Indian peafowl is classified as Least Concern by the IUCN. However, poaching of peacocks for their meat and feathers and accidental poisoning by feeding on pesticide treated seeds are known threats to wild birds.
+Poaching Reality and Methods: Despite being India's National Bird and protected under the Wildlife Protection Act, peacocks face significant poaching pressure:
+Illegal Trade Patterns: They are hunted for feathers, fat and meat. Though the transport, transfer and trade in the peacock tail feathers are exempted, the incidents of high mortality in some areas denote poaching.
+Males are generally captured from the wild for their attractive feathers, thereby affecting their population. Certain tribes use body parts of peafowl to consume as food. Peafowl ashes are used as medicines that are assumed to cure asthma.
+Modern Poaching Methods: There are reports from some parts of the country of poachers poisoning peafowl by mixing powerful pesticides into waterholes frequented by the birds.
+Recent Incidents: In January 2021, the residents of Gurgaon reported incidents of peacock poaching in the Aravalli Biodiversity Park. Several metal traps were found in the park that were set to capture these birds for their feathers.
+Contemporary Threats and Challenges:
+Illegal Commercial Trade: While collecting naturally shed feathers for these is right, poaching peacocks to acquire them is unlawful and unethical. Moreover, in certain Indian regions, peacocks are hunted down for their meat, oil and other body parts for traditional medicines or to be marketed as exotic products.
+Major Threat Categories:
+Feather Trade: High demand for decorative purposes in fashion and tourism industry
+Traditional Medicine: Body parts used in folk remedies despite lack of scientific basis
+Meat Consumption: Illegal hunting for food in certain regions
+Habitat Loss: Agricultural expansion and urbanization reducing suitable habitat
+Pesticide Poisoning: Accidental deaths from consuming contaminated food/water
+Human-Wildlife Conflict: Crop damage leading to retaliatory killing
+Regional Vulnerability:
+Northern Plains: High poaching pressure due to feather trade
+Western Rajasthan: Habitat fragmentation affecting breeding
+Central India: Increasing human-wildlife conflict incidents
+Southern States: Pesticide use in agriculture causing mortality
+Legal Protection Status: The Indian Peafowl is protected as a Schedule I species under the Wildlife Protection Act, 1972, making hunting, killing, or trading in peacocks punishable with imprisonment up to 7 years and fines up to ₹25,000.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline (Sanctuary Perspective)</h4>
+                        <p class="text-[#94a3b8]">Bharatiya Mayur Sanrakshan Kendra (Indian Peacock Conservation Centre) - Established 2017
+2017 - Foundation and Vision:
+Conservation center established in Rajasthan with focus on peacock rehabilitation
+Initial rescue facility created for 25 peacocks with natural habitat simulation
+First major rescue: 12 peacocks from illegal feather trade bust in Jaipur
+2018 - Community Engagement Launch:
+"Mayur Mitra" (Peacock Friends) program launched in 35 villages
+Educational awareness campaigns reached 8,000 school children
+First successful breeding season: 18 chicks from 6 breeding pairs
+Traditional healers' education program to discourage use of peacock parts
+2019 - Research and Monitoring:
+GPS tracking study initiated on 15 released peacocks
+Community-based nest protection program established
+First documentation of urban peacock adaptation strategies
+2020 - Pandemic Challenges and Adaptation:
+COVID-19 lockdown increased human-peacock conflicts in urban areas
+Emergency rescue protocols for distressed urban peacocks
+Virtual education programs reached 15,000 students nationwide
+2021 - Anti-Poaching Intensification:
+Response to Gurgaon poaching incidents with enhanced surveillance
+2022 - Habitat Restoration Focus:
+Large-scale habitat restoration project covering 1,200 acres
+Native plant species cultivation program for peacock food sources
+Water body restoration and creation of 25 artificial watering holes
+Organic farming promotion in 20 villages to reduce pesticide impact
+2023 - Technology Integration:
+AI-powered monitoring system for early poaching detection
+Mobile app launched for citizen reporting of peacock distress
+Genetic diversity assessment of captive and wild populations
+International collaboration with peafowl conservation networks
+2024 - Expansion and Partnerships:
+Opened satellite centers in Gujarat and Madhya Pradesh
+Corporate partnership program generating ₹8 million for conservation
+Successfully treated 127 peacocks for various ailments and injuries
+First cross-state translocation program for genetic diversity
+
+The peacock's journey from ancient symbol to modern conservation icon reflects India's commitment to preserving our natural and cultural heritage. Every rescued peacock carries forward thousands of years of reverence, art, and spiritual significance that define our civilization.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#94a3b8] max-w-lg">
+                        The peacock holds an unparalleled position in Indian culture, spirituality, and history. No other bird is as deeply woven into the fabric of Indian civilization as the peacock. It is India's National Bird, declared in 1963, symbolizing grace, beauty, joy, and love. It is sacred to Lord Krishna, often depicted with peacock feathers in his crown, and is the vehicle of Goddess Saraswati, representing wisdom and arts. Lord Murugan (Kartikeya) rides a peacock, symbolizing the victory of good over evil. Historically, it has been featured in ancient texts like the Vedas, Ramayana, and Mahabharata, and has been integral to Mughal art and architecture.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/peacock_img2.jpg" alt="Indian Peacock displaying feathers" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Threat Categories</h4>
+                        <p class="text-[#94a3b8]">
+                            30% Feather Trade<br>
+                            20% Meat & Fat<br>
+                            10% Ashes & Body Parts<br>
+                            20% Habitat Loss<br>
+                            10% Pesticide Poisoning<br>
+                            10% Retaliatory Killings
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#94a3b8]">
+                            31% Breeding Adults<br>
+                            21% Young Adults<br>
+                            40% Juveniles<br>
+                            8% Under Treatment + Non-releasable
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#94a3b8]">
+                            63% Successfully Released<br>
+                            30% Community & Habitat Impact<br>
+                            7% Legal & Other Support
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Bharatiya Mayur Sanrakshan Kendra Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2017</h4>
+                        <p class="text-[#94a3b8]">Conservation center established. First major rescue of 12 peacocks from illegal feather trade.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2018</h4>
+                        <p class="text-[#94a3b8]">"Mayur Mitra" program launched in 35 villages. First successful breeding season with 18 chicks.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2019</h4>
+                        <p class="text-[#94a3b8]">GPS tracking initiated on 15 released peacocks. Community-based nest protection program established.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2020</h4>
+                        <p class="text-[#94a3b8]">Emergency rescue protocols for distressed urban peacocks during COVID-19 lockdown.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2021</h4>
+                        <p class="text-[#94a3b8]">Enhanced surveillance and camera trap network installed in response to poaching incidents.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2022</h4>
+                        <p class="text-[#94a3b8]">Large-scale habitat restoration project covering 1,200 acres. Organic farming promotion in 20 villages.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2023</h4>
+                        <p class="text-[#94a3b8]">AI-powered monitoring system for early poaching detection. Mobile app launched for citizen reporting.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2024</h4>
+                        <p class="text-[#94a3b8]">Satellite centers opened in Gujarat and Madhya Pradesh. Corporate partnership program generated ₹8 million.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2025</h4>
+                        <p class="text-[#94a3b8]">State-of-the-art veterinary facility launched. Real-time monitoring of 89 GPS-collared peacocks across three states.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#0b121f] text-[#94a3b8] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#94a3b8]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

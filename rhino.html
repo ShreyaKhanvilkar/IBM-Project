@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian One-Horned Rhinoceros: Conservation Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #36454F; /* Charcoal Grey */
+            color: #E0E0E0; /* Light Grey */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #4A5D6B; /* Slightly lighter charcoal */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #607D8B; /* Blue Grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #36454F; /* Charcoal Grey */
+            border: 4px solid #8BC34A; /* Light Green Accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #607D8B;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #607D8B transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #FF6347 0% 50%, /* Poaching */
+                #FFD700 50% 75%, /* Habitat Fragmentation */
+                #6B8E23 75% 85%, /* Human-Wildlife Conflict */
+                #4682B4 85% 95%, /* Floods */
+                #8A2BE2 95% 100% /* Disease */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #3CB371 0% 17%, /* Adult Breeding Stock */
+                #98FB98 17% 29%, /* Sub-adults */
+                #66CDAA 29% 39%, /* Juveniles/Calves */
+                #20B2AA 39% 47%, /* Rescued */
+                #5F9EA0 47% 53%, /* Permanent Residents */
+                #4682B4 53% 100% /* Other */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #008000 0% 60%, /* Successfully Released */
+                #32CD32 60% 80%, /* Breeding Success */
+                #6B8E23 80% 90%, /* Habitat Restoration */
+                #8BC34A 90% 100% /* Community Engagement */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#36454F] text-[#E0E0E0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Indian One-Horned Rhinoceros: Conservation Profile</h1>
+                <p class="text-lg md:text-2xl text-[#B0C4DE] mb-8 animate-fade-in delay-200">A massive, prehistoric-looking mammal with thick, gray-brown skin that appears armor-plated with deep folds and tubercles. Distinguished by a single black horn on the snout, it is a symbol of resilience and one of India's greatest conservation success stories.</p>
+                <img src="photos/rhino_img1.webp" alt="Indian Rhinoceros Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#B0C4DE] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Indian rhinoceros's scientific name, Rhinoceros unicornis, perfectly describes its most distinctive feature: a single horn on its nose. This name has been in use since the 14th century, highlighting its long-recognized uniqueness.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Name</h4>
+                    <p class="text-lg md:text-xl text-[#B0C4DE]">Rhinoceros unicornis</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#B0C4DE]">Indian Rhinoceros, Greater One-Horned Rhinoceros, Great Indian Rhinoceros</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Rhino's Ancient Legacy</h3>
+                <p class="text-lg md:text-xl text-[#B0C4DE] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the Indian rhinoceros's evolutionary journey, its profound cultural significance, the threats it faces, and the dedicated conservation efforts to protect it.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Their Story - Origin, History & Historical Significance</h4>
+                        <p class="text-[#B0C4DE]">Evolutionary Journey: The Indian rhinoceros belongs to an ancient lineage that dates back millions of years. The earliest remains of the genus Rhinoceros are known from the Late Miocene, with remains found in deposits in Myanmar dating to around 8-9 million years ago. These magnificent creatures represent one of the most successful megafauna lineages, having survived multiple ice ages and geological changes that eliminated many of their contemporaries.
+Scientific Discovery and Classification: The scientific name was proposed by Swedish taxonomist Carl Linnaeus in 1758. Several specimens were described since the end of the 18th century under different scientific names, which are all considered synonyms of Rhinoceros unicornis today, including R. indicus by Cuvier (1817), R. asiaticus by Blumenbach (1830), and others. The name rhinoceros has ancient roots: The generic name rhinoceros is derived through Latin from the Ancient Greek: ῥινόκερως, which is composed of ῥινο- (rhino-, "of the nose") and κέρας (keras, "horn") with a horn on the nose. The name has been in use since the 14th century.
+Historical Distribution and Cultural Significance: The Indian rhinoceros once had a vast range across the northern Indian subcontinent, from Pakistan in the west to Myanmar in the east, and from the Himalayan foothills in the north to the Ganges River delta in the south. Historical accounts from the Mughal period describe rhinoceros hunts and their presence in royal menageries.
+Cultural and Religious Importance: Ancient Literature: Referenced in Sanskrit texts as "Khadga" and "Ekashringa". Mughal Art: Featured prominently in Mughal paintings and court descriptions. Hindu Mythology: Associated with strength, power, and primordial forces. Buddhist Symbolism: Represents solitary spiritual practice and determination. Traditional Medicine: Horn historically valued in traditional medicine (now illegal).
+Historical Timeline: Prehistoric Era: Roamed across entire northern Indian subcontinent. 1758: First scientific description by Carl Linnaeus. 1800s: Extensive hunting begins during British colonial period. Early 1900s: Population reduced to fewer than 200 individuals. 1908: First protected area established (Kaziranga). 1975: Listed in CITES Appendix I. 1986: Classified as Endangered by IUCN. 2008: Status improved to Vulnerable due to conservation success.
+Cultural Legacy and Modern Recognition: The Indian rhinoceros has become a symbol of conservation success in Asia. From the brink of extinction with fewer than 200 individuals in the early 1900s, the species has recovered to over 3,500 individuals today, making it one of the greatest conservation success stories in the world.
+Modern Significance: Conservation Icon: Flagship species for Indian wildlife conservation. Ecotourism: Major draw for wildlife tourism in Assam and West Bengal. Scientific Research: Model species for large mammal conservation biology. Cultural Ambassador: Symbol of India's commitment to biodiversity conservation.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural and Historical Significance</h4>
+                        <p class="text-[#B0C4DE]">The Indian rhinoceros once had a vast range across the northern Indian subcontinent, from Pakistan in the west to Myanmar in the east, and from the Himalayan foothills in the north to the Ganges River delta in the south. Historical accounts from the Mughal period describe rhinoceros hunts and their presence in royal menageries.
+Cultural and Religious Importance: Ancient Literature: Referenced in Sanskrit texts as "Khadga" and "Ekashringa". Mughal Art: Featured prominently in Mughal paintings and court descriptions. Hindu Mythology: Associated with strength, power, and primordial forces. Buddhist Symbolism: Represents solitary spiritual practice and determination. Traditional Medicine: Horn historically valued in traditional medicine (now illegal).
+Historical Timeline: Prehistoric Era: Roamed across entire northern Indian subcontinent. 1758: First scientific description by Carl Linnaeus. 1800s: Extensive hunting begins during British colonial period. Early 1900s: Population reduced to fewer than 200 individuals. 1908: First protected area established (Kaziranga). 1975: Listed in CITES Appendix I. 1986: Classified as Endangered by IUCN. 2008: Status improved to Vulnerable due to conservation success.
+Cultural Legacy and Modern Recognition: The Indian rhinoceros has become a symbol of conservation success in Asia. From the brink of extinction with fewer than 200 individuals in the early 1900s, the species has recovered to over 3,500 individuals today, making it one of the greatest conservation success stories in the world.
+Modern Significance: Conservation Icon: Flagship species for Indian wildlife conservation. Ecotourism: Major draw for wildlife tourism in Assam and West Bengal. Scientific Research: Model species for large mammal conservation biology. Cultural Ambassador: Symbol of India's commitment to biodiversity conservation.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Poaching Incidents and Threats</h4>
+                        <p class="text-[#B0C4DE]">Current Conservation Status: The Indian rhinoceros is listed as Vulnerable on the IUCN Red List, as the population is fragmented and restricted to less than 20,000 km2. As of August 2018, it was estimated to comprise 3,588 individuals. However, poaching remains a continuous threat.
+Poaching Reality and Scale: Poaching for the illegal trade in rhino horn remains the biggest threat to the greater one-horned rhino. The situation has seen both devastating periods and remarkable recovery phases.
+Traditional Threats: Indian rhinos are targeted by poachers due to the high value of their horns in traditional Chinese medicine. Due to the ancient belief in the healing and magical powers of their horn, poaching has become highly prevalent which has led to the decrease in their population.
+Conservation Success Story: However, there's encouraging news from recent years. In 2022, for the first time in 45 years, no greater one-horned rhinos were poached in the Indian state of Assam. This represents a remarkable turnaround in anti-poaching efforts.
+Historical Impact and Recovery: In the early 1990s, the global population was estimated at between 1,870 and 1,895 individuals. Since then, the population increased due to conservation measures taken by the governments. The current estimate of the Indian one-horned rhinoceros population is just 2,006 of which 81% live in Assam, and 75% of that figure survive in Kaziranga National Park, making this park fundamental to the survival of the species.
+Contemporary Threats and Challenges:
+Primary Threats: Poaching for Horn Trade: Despite legal protection, horn fetches high prices in illegal markets. Habitat Fragmentation: Agricultural expansion reducing corridor connectivity. Human-Wildlife Conflict: Crop raiding leading to retaliatory attacks. Floods: Climate change increasing frequency of devastating floods in Assam. Disease Outbreaks: Concentrated populations vulnerable to epidemics. Infrastructure Development: Roads, railways fragmenting habitat.
+Regional Vulnerability: Kaziranga National Park: Seasonal flooding displacing animals into human areas. Chitwan National Park (Nepal): Border trafficking challenges. Pobitora Wildlife Sanctuary: Overcrowding leading to territory conflicts. Orang National Park: Human encroachment pressure.
+Modern Anti-Poaching Efforts: Armed Forest Guards: 24/7 patrolling in rhino habitats. Technology Integration: Camera traps, drones, and GPS tracking. Community Involvement: Local communities engaged as conservation partners. Intelligence Networks: Coordinated efforts to break poaching syndicates. Legal Framework: Strict penalties under Wildlife Protection Act.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline (Sanctuary Perspective)</h4>
+                        <p class="text-[#B0C4DE]">Northeast India Rhinoceros Rescue & Rehabilitation Centre - Established 2016
+2016 - Establishment and Emergency Response: Centre established near Kaziranga with capacity for 12 adult rhinoceros. First major rescue operation: 8 rhinos displaced by severe flooding. Veterinary unit equipped for treating gunshot wounds and snare injuries. Partnership with Assam Forest Department for rapid response protocols.
+2017 - Infrastructure Development: Constructed 4 large enclosures (2 hectares each) with natural habitat features. Established specialized quarantine facility for new arrivals. First successful treatment of poaching victim: "Manas" - male with horn partially removed. Community outreach program launched in 25 villages around Kaziranga.
+2018 - Research and Monitoring: GPS collar program initiated for tracking released animals. Behavioral study of human-rhino conflict patterns begun. Established mud wallowing pools and feeding stations matching wild conditions. First breeding success: "Brahmaputra" (female) gave birth to healthy calf.
+2019 - Expansion and Partnerships: Opened satellite facility in Chitwan, Nepal for cross-border conservation. International collaboration with European zoos for genetic management. Treated record number of flood-displaced rhinos (14 individuals). Launched "Rhino Guardian" program employing 120 local youth.
+2020 - Pandemic Challenges and Innovation: COVID-19 restrictions limited international support but increased local community involvement. Developed telemedicine protocols for veterinary consultations. Zero poaching incidents in areas covered by our patrol network. Successfully raised 6 orphaned calves to independence.
+2021 - Advanced Conservation Methods: Implemented AI-powered anti-poaching surveillance system. Genetic sampling program to maintain population diversity. Cross-state translocation program to establish new populations. Community compensation scheme for crop damage by rhinos.
+2022 - Historic Anti-Poaching Success: Contributed to Assam's achievement of zero rhino poaching for first time in 45 years. Established rapid response teams in 8 districts. Released 12 rehabilitated rhinos to protected areas with 100% survival rate. Advanced veterinary techniques for treating severe injuries.
+2023 - Habitat Restoration Focus: Large-scale grassland restoration covering 800 hectares. Created 15 artificial wetlands for dry season habitat. Corridor restoration connecting fragmented populations. International training center for rhino conservation specialists.
+2024 - Technology Integration: Drone surveillance network covering 1,200 sq km of rhino habitat. Real-time tracking system for 45 GPS-collared individuals. Mobile app for citizen reporting of rhino distress. Collaboration with tech companies for advanced monitoring systems.
+2025 - Current Advanced Operations: State-of-the-art medical facility capable of complex surgeries. Breeding program maintaining genetic diversity across populations. Climate change adaptation strategies for flood-prone areas. Leading research on rhino behavior and ecological requirements.
+Women's Cooperatives: 45 self-help groups involved in organic farming
+Youth Rangers: 234 young people trained in wildlife monitoring
+Compensation Schemes: ₹15 million paid for crop damage and livestock losses
+The Indian rhinoceros represents one of conservation's greatest triumphs - proof that dedicated protection, community involvement, and scientific management can bring a species back from the very edge of extinction. Every individual we save carries the genetic legacy of millions of years of evolution and embodies the hope for wildlife conservation across Asia.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#B0C4DE] max-w-lg">
+                        The Indian rhinoceros once had a vast range across the northern Indian subcontinent, from Pakistan in the west to Myanmar in the east, and from the Himalayan foothills in the north to the Ganges River delta in the south. Historical accounts from the Mughal period describe rhinoceros hunts and their presence in royal menageries. It is referenced in Sanskrit texts as "Khadga" and "Ekashringa," and associated with strength, power, and primordial forces in Hindu mythology. In Buddhist symbolism, it represents solitary spiritual practice and determination. Historically, its horn was valued in traditional medicine, though this practice is now illegal. The Indian rhinoceros has become a symbol of conservation success in Asia, recovering from fewer than 200 individuals in the early 1900s to over 3,500 today.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/rhino_img2.jpeg" alt="Indian Rhinoceros cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#B0C4DE]">
+                            50% Poaching for Horn Trade<br>
+                            25% Habitat Fragmentation<br>
+                            10% Human-Wildlife Conflict<br>
+                            10% Floods<br>
+                            5% Disease Outbreaks
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#B0C4DE]">
+                            17% Adult Breeding Stock<br>
+                            12% Sub-adults<br>
+                            10% Juveniles/Calves<br>
+                            8% Rescued<br>
+                            6% Permanent Residents<br>
+                            47% Other
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#B0C4DE]">
+                            60% Successfully Released<br>
+                            20% Breeding Success<br>
+                            10% Habitat Restoration<br>
+                            10% Community Engagement
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Northeast India Rhinoceros Rescue & Rehabilitation Centre Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2016</h4>
+                        <p class="text-[#B0C4DE]">Centre established near Kaziranga. First major rescue operation: 8 rhinos displaced by severe flooding.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2017</h4>
+                        <p class="text-[#B0C4DE]">Infrastructure developed. First successful treatment of poaching victim: "Manas" with horn partially removed.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2018</h4>
+                        <p class="text-[#B0C4DE]">GPS collar program initiated for tracking released animals. First breeding success: "Brahmaputra" gave birth to healthy calf.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2019</h4>
+                        <p class="text-[#B0C4DE]">Satellite facility opened in Chitwan, Nepal. Launched "Rhino Guardian" program employing 120 local youth.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2020</h4>
+                        <p class="text-[#B0C4DE]">COVID-19 restrictions led to zero poaching incidents in patrol areas. Successfully raised 6 orphaned calves.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2021</h4>
+                        <p class="text-[#B0C4DE]">AI-powered anti-poaching surveillance system implemented. Cross-state translocation program established.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2022</h4>
+                        <p class="text-[#B0C4DE]">Contributed to Assam's achievement of zero rhino poaching for the first time in 45 years.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2023</h4>
+                        <p class="text-[#B0C4DE]">Large-scale grassland restoration covering 800 hectares. International training center for rhino conservation specialists.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2024</h4>
+                        <p class="text-[#B0C4DE]">Drone surveillance network covering 1,200 sq km. Real-time tracking system for 45 GPS-collared individuals.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2025</h4>
+                        <p class="text-[#B0C4DE]">State-of-the-art medical facility. Breeding program maintaining genetic diversity. Climate change adaptation strategies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#2C3E50] text-[#B0C4DE] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#E0E0E0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#E0E0E0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#E0E0E0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#B0C4DE]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

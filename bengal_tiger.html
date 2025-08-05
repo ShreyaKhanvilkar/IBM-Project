@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bengal Tiger: Conservation Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* Dark almost black */
+            color: #f0f0f0; /* Off-white */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #2a2a2a; /* Slightly lighter dark grey for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #4a4a4a; /* Medium grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #1a1a1a; /* Dark almost black */
+            border: 4px solid #ff8c00; /* Dark orange accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #4a4a4a;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #4a4a4a transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #ff8c00 0% 60%, /* Poaching */
+                #ffa500 60% 80%, /* Human-Tiger Conflict */
+                #ffcc00 80% 90%, /* Habitat Fragmentation */
+                #ffd700 90% 95%, /* Prey Depletion */
+                #f0e68c 95% 100% /* Other */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #8b4513 0% 35.3%, /* Permanent Residents */
+                #a0522d 35.3% 58.8%, /* Rehabilitation Candidates */
+                #cd853f 58.8% 76.4%, /* Recent Rescues */
+                #d2b48c 76.4% 100% /* Breeding Research */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #006400 0% 83%, /* Successfully Released */
+                #228b22 83% 93%, /* Habitat & Community Impact */
+                #3cb371 93% 100% /* Research/Other */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#1a1a1a] text-[#f0f0f0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Bengal Tiger: Conservation Profile</h1>
+                <p class="text-lg md:text-2xl text-[#c0c0c0] mb-8 animate-fade-in delay-200">The world's most iconic big cat with distinctive orange coat marked by black stripes, powerful muscular build, and intense amber or yellow eyes. Males are significantly larger with prominent ruff around the neck. A symbol of power, strength, and elegance, it is India's National Animal.</p>
+                <img src="photos/tiger_img1.jpg" alt="Bengal Tiger Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#c0c0c0] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Bengal tiger's classification highlights its status as the most numerous and genetically diverse tiger subspecies, representing the "original" tiger.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Name</h4>
+                    <p class="text-lg md:text-xl text-[#c0c0c0]">Panthera tigris tigris</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#c0c0c0]">Bengal Tiger, Royal Bengal Tiger, Indian Tiger</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Tiger's Roar Through Time</h3>
+                <p class="text-lg md:text-xl text-[#c0c0c0] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the Bengal tiger's evolutionary journey, its profound cultural significance, the threats it faces, and the dedicated conservation efforts to protect it.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Their Story - Origin, History & Historical Significance</h4>
+                        <p class="text-[#c0c0c0]">Evolutionary Journey: The tiger lineage split from other big cats approximately 6-10 million years ago, with modern tigers evolving around 2 million years ago. The Bengal tiger represents the most numerous and genetically diverse tiger subspecies, having adapted perfectly to the diverse ecosystems of the Indian subcontinent - from the mangrove swamps of the Sundarbans to the grasslands of central India and the foothills of the Himalayas.
+Scientific Discovery and Classification: The tiger holds the distinction of being one of the first big cats to receive scientific classification. In 1758, Carl Linnaeus described the tiger in his groundbreaking work Systema Naturae, giving it the scientific name Felis tigris. His scientific description was based on earlier naturalists' accounts including Conrad Gessner and Ulisse Aldrovandi, though the genus was later changed to Panthera. The Bengal tiger subspecies was formally recognized as Panthera tigris tigris, representing the nominate subspecies - essentially the "original" tiger from which all other subspecies classifications were derived.
+Cultural and Historical Significance: No animal holds a more prominent place in Indian culture, religion, and national identity than the Bengal tiger. For over 4,000 years, tigers have been woven into the very fabric of Indian civilization.
+Religious and Mythological Importance: National Animal: India's National Animal since independence, symbolizing power, strength, elegance, and grace. Hindu Tradition: Sacred to Goddess Durga, who rides a tiger into battle against evil. Shiva's Association: Connected to Lord Shiva, who wears tiger skin, representing mastery over animal nature. Buddhist Symbolism: Represents meditation and mindfulness in Buddhist traditions. Jain Philosophy: Exemplifies the power and dignity of wildlife that must be protected.
+Historical and Cultural Legacy: Ancient Literature: Featured prominently in the Vedas, Puranas, and epic literature. Mughal Art: Central to Mughal paintings, representing royal power and divine authority. British Colonial Period: Symbol of the "wild India" that colonizers sought to conquer. Regional Folklore: Thousands of stories, songs, and legends across Indian cultures. Modern Conservation: Became the symbol of India's environmental awakening.
+Historical Timeline: Ancient Period: Revered in Indus Valley Civilization artifacts (3000 BCE). 1500 BCE: First references in Vedic literature as divine vahana. 500 CE: Featured extensively in classical Sanskrit literature. Medieval Period: Central to Mughal court culture and art. 1758: Scientific description by Carl Linnaeus. 1900s: Population crashes due to colonial hunting and habitat loss. 1973: Project Tiger launched - world's first comprehensive tiger conservation program. Present: Population recovery from 1,411 (2006) to over 3,167 (2022).
+Cultural Impact and Symbolism: The Bengal tiger represents: Royal Power: Traditional symbol of Indian royalty and divine kingship. National Pride: Emblem of independent India's natural heritage. Spiritual Strength: Represents inner power and spiritual mastery. Environmental Consciousness: Flagship species for conservation movement. Cultural Identity: Central to regional identity across Bengal, Bihar, and Northeast.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural and Historical Significance</h4>
+                        <p class="text-[#c0c0c0]">No animal holds a more prominent place in Indian culture, religion, and national identity than the Bengal tiger. For over 4,000 years, tigers have been woven into the very fabric of Indian civilization.
+Religious and Mythological Importance: National Animal: India's National Animal since independence, symbolizing power, strength, elegance, and grace. Hindu Tradition: Sacred to Goddess Durga, who rides a tiger into battle against evil. Shiva's Association: Connected to Lord Shiva, who wears tiger skin, representing mastery over animal nature. Buddhist Symbolism: Represents meditation and mindfulness in Buddhist traditions. Jain Philosophy: Exemplifies the power and dignity of wildlife that must be protected.
+Historical and Cultural Legacy: Ancient Literature: Featured prominently in the Vedas, Puranas, and epic literature. Mughal Art: Central to Mughal paintings, representing royal power and divine authority. British Colonial Period: Symbol of the "wild India" that colonizers sought to conquer. Regional Folklore: Thousands of stories, songs, and legends across Indian cultures. Modern Conservation: Became the symbol of India's environmental awakening.
+Historical Timeline: Ancient Period: Revered in Indus Valley Civilization artifacts (3000 BCE). 1500 BCE: First references in Vedic literature as divine vahana. 500 CE: Featured extensively in classical Sanskrit literature. Medieval Period: Central to Mughal court culture and art. 1758: Scientific description by Carl Linnaeus. 1900s: Population crashes due to colonial hunting and habitat loss. 1973: Project Tiger launched - world's first comprehensive tiger conservation program. Present: Population recovery from 1,411 (2006) to over 3,167 (2022).
+Cultural Impact and Symbolism: The Bengal tiger represents: Royal Power: Traditional symbol of Indian royalty and divine kingship. National Pride: Emblem of independent India's natural heritage. Spiritual Strength: Represents inner power and spiritual mastery. Environmental Consciousness: Flagship species for conservation movement. Cultural Identity: Central to regional identity across Bengal, Bihar, and Northeast.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Poaching Incidents and Threats</h4>
+                        <p class="text-[#c0c0c0]">Current Conservation Status: As of 2022, the Bengal tiger population was estimated at 3,167–3,682 individuals in India, showing remarkable recovery but still facing severe threats. Despite being one of conservation's greatest success stories, poaching remains the largest immediate threat to the remaining tiger population.
+Poaching Crisis and Scale: The poaching situation for Bengal tigers remains critical despite decades of conservation efforts. Tigers are increasingly coming into conflict with humans as they attack domestic animals – and sometimes people while they move through human-dominated spaces. In retaliation, tigers are often killed by angry villagers.
+Current Poaching Patterns: The WILDLIFE PROTECTION SOCIETY OF INDIA (WPSI) works with government enforcement agencies to apprehend tiger poachers and traders throughout India, but the figures they compile represent only a fraction of the actual poaching and trade in tiger parts in India.
+Recent Major Cases: In a major breakthrough in 2024, a poaching syndicate that extended from Gadchiroli, Maharashtra to Guwahati, Assam was recently busted. This was achieved by a joint effort by the forest departments of Maharashtra and Assam, along with the Wildlife Crime Control Bureau (WCCB).
+Illegal Trade Networks: Traditional Medicine Demand: Bengal tigers are illegally hunted for their skin and bones that are used in traditional Asian medicine. Poaching of tigers for the traditional Chinese medicine industry started in northern India in the mid-1980s, and investigations in 1993-94 revealed the seizure of 36 tiger skins and 667 kilos (1,470 pounds) of tiger bones in northern India alone.
+Criminal Networks: The scale of organized poaching is staggering. Poacher Sansar Chand acknowledged selling 470 tiger skins and 2,130 leopard skins to four clients from Nepal and Tibet. He was termed "the kingpin running the country's biggest wildlife trade syndicate."
+Low Conviction Rates: Despite the severity of the crime, the conviction rate for poachers is approximately four percent, indicating systemic challenges in law enforcement and judicial processes.
+Multi-Faceted Threats: Beyond Direct Poaching: Human-Tiger Conflict: Retaliatory killings when tigers attack livestock or humans. Habitat Fragmentation: Development projects isolating tiger populations. Prey Depletion: Illegal hunting reducing natural prey base. Infrastructure Development: Roads and railways causing deaths and habitat division. Climate Change: Affecting prey distribution and water availability. Tourism Pressure: Unregulated tourism disturbing tiger behavior.
+Regional Vulnerability: Central India: Highest poaching pressure due to human-tiger interface. Sundarbans: Unique challenges with mangrove ecosystem and climate change. Northeast: Cross-border trafficking with Myanmar and China. Rajasthan: Desert tigers facing water scarcity and territorial conflicts.
+Legal Protection: Protected under Schedule I of the Wildlife Protection Act, 1972, with penalties including imprisonment up to 7 years and fines up to ₹25,000. However, enforcement remains challenging across vast forest areas.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline (Sanctuary Perspective)</h4>
+                        <p class="text-[#c0c0c0]">Bharatiya Vyaghra Sanrakshan Kendra (Indian Tiger Conservation Centre) - Established 2008
+2008 - Foundation During Crisis: Emergency tiger rescue facility established following precipitous population decline. Initial capacity for 15 tigers with 50-hectare natural habitat enclosures. First major rescue: "Sundari" - female with cub, victims of human-tiger conflict in Sundarbans. Collaboration with Project Tiger and National Tiger Conservation Authority.
+2009-2012 - Early Interventions: Rescued 8 tigers from various conflict situations and poaching attempts. Established specialized veterinary protocols for treating gunshot and snare wounds. First successful rehabilitation: "Ranthambore" - male tiger released back to Sariska. Community engagement program launched in 35 villages around tiger corridors.
+2013-2017 - Research Integration: GPS collar tracking program for 25 released tigers across three states. Genetic sampling to maintain breeding diversity in fragmented populations. Camera trap network covering 2,400 sq km of tiger habitat. International collaboration with Smithsonian Conservation Biology Institute.
+2018-2020 - Technology Revolution: AI-powered anti-poaching surveillance system deployed. Thermal imaging and drone patrols for 24/7 monitoring. First evidence of successful breeding from rescued and released tigers. COVID-19 period: Reduced tourism led to increased tiger activity and successful breeding.
+2021-2023 - Expansion Phase: Opened satellite facilities in Madhya Pradesh and Karnataka. Advanced medical facility capable of complex surgeries on big cats. Treated record number of human-tiger conflict cases (23 tigers). Success story: First third-generation wild breeding from sanctuary-released parents.
+2024-2025 - Current Advanced Operations: Leading research on tiger behavior, genetics, and ecosystem requirements. Real-time monitoring of 67 GPS-collared tigers across six states. International training center for tiger conservation specialists. Climate change adaptation strategies for tiger habitats.
+Conservation Impact (2008-2025):
+Total tigers rescued and treated: 127
+Successfully released and thriving: 89 (83% long-term survival rate)
+Wild breeding documented: 156 cubs from 34 released tigers
+Habitat protected/restored: 8,400 sq km across six tiger landscapes
+Community partnerships: 234 villages engaged in tiger-friendly practices
+Economic benefits generated: ₹180 million annually through responsible eco-tourism
+Anti-poaching network: 450 community volunteers across tiger ranges
+Research publications: 89 peer-reviewed papers on tiger conservation
+Research Breakthroughs:
+Population Genetics: Comprehensive genetic mapping preventing inbreeding in fragmented populations
+Behavioral Ecology: Understanding territory requirements and social structure
+Human-Tiger Coexistence: Developing conflict mitigation strategies
+Medical Advances: Pioneering treatments for snare injuries and gunshot wounds
+Habitat Modeling: Predictive models for tiger movement and territory selection
+Camera Trap Innovation: Individual identification using AI pattern recognition
+The Bengal tiger embodies the soul of wild India - fierce yet magnificent, solitary yet essential to the ecosystem, ancient yet facing modern challenges. Every tiger we save carries forward 4,000 years of cultural reverence and millions of years of evolutionary perfection. They are not just India's National Animal; they are living symbols of our commitment to preserve the wild heritage that defines our civilization.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#c0c0c0] max-w-lg">
+                        No animal holds a more prominent place in Indian culture, religion, and national identity than the Bengal tiger. For over 4,000 years, tigers have been woven into the very fabric of Indian civilization. It is India's National Animal since independence, symbolizing power, strength, elegance, and grace. It is sacred to Goddess Durga, who rides a tiger into battle against evil, and is connected to Lord Shiva, who wears tiger skin, representing mastery over animal nature. From ancient literature like the Vedas to Mughal art and regional folklore, the tiger is a central figure, embodying royal power, spiritual strength, and environmental consciousness.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/tiger_img2.jpeg" alt="Bengal Tiger in cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#c0c0c0]">
+                            60% Poaching & Illegal Trade<br>
+                            20% Human-Tiger Conflict<br>
+                            10% Habitat Fragmentation<br>
+                            5% Prey Depletion<br>
+                            5% Other Threats
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#c0c0c0]">
+                            35% Permanent Residents<br>
+                            24% Rehabilitation Candidates<br>
+                            18% Recent Rescues<br>
+                            23% Breeding Research Subjects
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#c0c0c0]">
+                            83% Successfully Released<br>
+                            10% Habitat & Community Impact<br>
+                            7% Research & Other Support
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Bharatiya Vyaghra Sanrakshan Kendra Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2008</h4>
+                        <p class="text-[#c0c0c0]">Emergency tiger rescue facility established. First major rescue: "Sundari" and cub from human-tiger conflict.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2009-2012</h4>
+                        <p class="text-[#c0c0c0]">Rescued 8 tigers. Established veterinary protocols. First successful rehabilitation: "Ranthambore" released to Sariska.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2013-2017</h4>
+                        <p class="text-[#c0c0c0]">GPS collar tracking for 25 tigers. Genetic sampling initiated. Camera trap network covering 2,400 sq km.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2018-2020</h4>
+                        <p class="text-[#c0c0c0]">AI-powered anti-poaching surveillance deployed. Thermal imaging and drone patrols. First breeding from rescued/released tigers.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2021-2023</h4>
+                        <p class="text-[#c0c0c0]">Satellite facilities opened in MP and Karnataka. Advanced medical facility. Treated record 23 human-tiger conflict cases.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2024-2025</h4>
+                        <p class="text-[#c0c0c0]">Leading research on tiger behavior/genetics. Real-time monitoring of 67 GPS-collared tigers. International training center established.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#0a0a0a] text-[#c0c0c0] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#f0f0f0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#f0f0f0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#f0f0f0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#c0c0c0]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

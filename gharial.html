@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gharial: The Long-Nosed Crocodile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Dark blue-grey */
+            color: #e2e8f0; /* Light grey */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #1e293b; /* Darker blue-grey for items */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #334155; /* Medium blue-grey */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #0f172a; /* Dark blue-grey */
+            border: 4px solid #60a5fa; /* Light blue accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #334155;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #334155 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #ef4444 0% 40%, /* Habitat Degradation */
+                #f97316 40% 70%, /* Poaching */
+                #eab308 70% 90%, /* Bycatch */
+                #60a5fa 90% 100% /* Genetic */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #3b82f6 0% 48%, /* Juveniles */
+                #60a5fa 48% 73%, /* Sub-adults */
+                #93c5fd 73% 90%, /* Breeding Adults */
+                #bfdbfe 90% 100% /* Rescued */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #10b981 0% 70%, /* Bred & Released */
+                #34d399 70% 90%, /* Hatchling Survival */
+                #6ee7b7 90% 100% /* Habitat & Community */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-[#e2e8f0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Gharial: The Long-Nosed Crocodile</h1>
+                <p class="text-lg md:text-2xl text-[#94a3b8] mb-8 animate-fade-in delay-200">The Gharial, with its distinctive long snout, is a highly specialized fish-eating crocodilian and the last living representative of an ancient lineage. A true river dweller, its survival is deeply linked to the health of India's freshwater ecosystems.</p>
+                <img src="photos/gharial_img1.jpg" alt="Gharial Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Taxonomy and Names</h3>
+                <p class="text-lg md:text-xl text-[#94a3b8] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Gharial's scientific classification highlights its unique position as the sole living member of its genus, Gavialis, within the family Gavialidae.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Classification</h4>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Binomial Name: Gavialis gangeticus</p>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Family: Gavialidae</p>
+                    <p class="text-lg md:text-xl text-[#94a3b8]">Note: The term Gharial originates from the Hindi word ghara, meaning "pot", referring to the bulbous nasal protrusion (ghara) seen on mature males.</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Gharial's Ancient Journey</h3>
+                <p class="text-lg md:text-xl text-[#94a3b8] max-w-2xl mx-auto mb-16">
+                    Scroll down to discover the Gharial's evolutionary history, its specialized diet, and the critical threats it faces today.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Origin and History</h4>
+                        <p class="text-[#94a3b8]">The Gharial (Gavialis gangeticus), with its long, slender snout and fish-specialist lifestyle, is more than just a curious-looking crocodilian — it is the last living representative of an ancient and once-diverse lineage that traces its origins deep into the Mesozoic past.
+From Archosaurs to Crocodilians: The gharial’s ancestors first emerged during the Triassic period, over 240 million years ago, as part of the Archosauria — a vast group that also gave rise to dinosaurs, pterosaurs, and modern birds. By around 90 million years ago, early members of the order Crocodylia began to appear, with distinct families such as Alligatoridae, Crocodylidae, and the lineage that would eventually give rise to the Gavialidae — the gharial's family.
+The Misleading Thoracosaurs: Some of the earliest long-snouted crocodyliforms, known as thoracosaurs, lived around 72 million years ago. They resembled gharials in both appearance and feeding adaptations, especially their fish-hunting abilities. However, more recent studies have revealed that thoracosaurs were not ancestors of gharials, but instead evolved similar features independently — a striking example of convergent evolution, where unrelated species develop similar traits to adapt to comparable ecological niches.
+Genetic Revelations and Sisterhood: For much of the 20th century, gharials were considered the most ancient living crocodilians based on their unusual skull shape. But advances in molecular genetics transformed our understanding. DNA studies have shown that the gharial is more closely related to the false gharial (Tomistoma schlegelii) than previously believed. In fact, these two species are now placed together in the family Gavialidae, having diverged from a common ancestor roughly 38 to 40 million years ago, during the Eocene epoch. This discovery overturned decades of morphological classification and reshaped the crocodilian evolutionary tree.
+Born of the Indian Subcontinent: The genus Gavialis is believed to have originated in South Asia, particularly in the region that is now India and Pakistan, during the Early Miocene, approximately 20 to 23 million years ago. Fossils of ancestral Gavialis species have been discovered in the Siwalik Hills, indicating that gharials have been river dwellers in this region for millions of years. These freshwater ecosystems, rich in fish and free of large predators, likely fostered the gharial’s extreme snout specialization and piscivorous diet.
+A Once Widespread Lineage: Fossil evidence shows that gharial-like reptiles once ranged much more broadly across Asia. During the Pleistocene, gharials spread through interconnected river systems as far as Myanmar, Thailand, and even Java, where a now-extinct species, Gavialis bengawanicus, has been found. These migrations occurred through freshwater corridors, without crossing seas — reinforcing gharials’ strict dependence on riverine habitats.
+Lost Relatives Across Continents: The gharial’s evolutionary tree once included several other genera, including Gavialis browni, Toyotamaphimeia from Japan, Ikanogavialis from South America, and Gryposuchus, another South American relative known for its strikingly similar long snout and fish-based diet. Although these distant cousins are now extinct, they offer insights into how parallel evolution shaped similar adaptations in different parts of the world.
+One fascinating case is Gryposuchus pachakamue, which lived about 13 million years ago in what is now Peru. 
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural Significance</h4>
+                        <p class="text-[#94a3b8]">The gharial is deeply interwoven with India's cultural and religious traditions.
+Mythological and Religious Role: In Hindu mythology, the gharial is revered as the mount of Varuna, the Vedic god of water. Its motifs are often found in temple carvings, and it is mentioned as a powerful river-dwelling reptile in ancient texts.
+Traditional Medicine: Historically, the male gharial's nasal knob (ghara), fat, and eggs were used in traditional folk remedies. However, such practices are now outlawed under the Wildlife Protection Act, 1972.
+Historical Distribution: The gharial was once abundant in the major river systems of the Ganges, Indus, Brahmaputra, and Mahanadi, with population estimates in the 1940s ranging between 5,000 and 10,000 individuals.
+<br>
+The gharial has been a symbol of India's riverine ecosystems for millennia. Ancient Indian texts describe these magnificent reptiles as both feared predators and respected denizens of sacred waters. In traditional Indian art and sculpture, gharials often appear alongside river goddesses and water deities, emphasizing their cultural importance as guardians of aquatic realms.
+<br>
+Historically, gharials were found to swarm the Ganges and its tributaries from Chambal in Rajasthan to Mahanadi in Orissa and Brahmaputra and Barak valley of Assam. This massive historical range shows how dramatically their distribution has shrunk.
+Cultural and Religious Importance:
+Sacred Rivers: Deeply associated with the holy Ganges River system in Hindu culture
+Ancient Texts: Referenced in Sanskrit literature as "Nakra" and "Graha"
+Mythological Significance: Associated with Varuna, the Vedic god of water and rivers
+Traditional Medicine: Body parts historically used in Ayurvedic medicine (now illegal)
+Folk Tales: Featured in regional folklore as guardians of river treasures
+
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Threats to Survival</h4>
+                        <p class="text-[#94a3b8]">Poaching: Despite legal protection, gharials are still targeted for their skin (which is used for leather), meat, male's nasal bulb (which is believed to have aphrodisiac properties), eggs (consumed for perceived medicinal benefits), and body fat (extracted for joint pain remedies).
+Habitat Degradation: The construction of dams and barrages has fragmented river habitats and disrupted natural water flow. Sand mining has destroyed crucial nesting beaches, and industrial pollution has poisoned the rivers.
+Bycatch and Prey Depletion: Gharials often get entangled in fishing nets, leading to drowning. Overfishing also depletes the gharial's primary food source.
+Genetic Challenges: The severe decline in population has led to isolated and non-interbreeding pockets, causing a genetic bottleneck and raising concerns about inbreeding and reduced genetic diversity.
+<br>
+Current Threat Status
+Poaching is a major threat, especially in the National Chambal River Sanctuary, which had been a stronghold of the species for several decades. The gharial faces multiple interconnected threats that have pushed it to the brink of extinction.
+Poaching and Illegal Trade
+Poaching occurs for skin and meat; also for male's nasal knob (ghara) to be used as an aphrodisiac. Harvesting of eggs and poaching for the use of its body parts as medicines has been traditional and is still reported from Nepal and, occasionally, in India.
+<br>Traditional Medicine Trade:
+Ghara (Male's Nasal Bulb): Illegally traded as aphrodisiac
+Fat and Oil: Used in traditional remedies for joint pain
+Eggs: Consumed for supposed medicinal properties
+Skin: Made into leather goods despite legal protection
+<br>Multi-Faceted Threats
+Beyond direct poaching, gharials face numerous environmental pressures:
+<br>Habitat Destruction:
+Increased river pollution, dam construction, massive-scale fishing operations and floods. Illegal sand mining and poaching
+Hydroelectric dams fragmenting river systems
+Sand mining destroying nesting beaches
+Water extraction reducing river flows
+<br>Indirect Mortality:
+Fishing depletes the prey base and Gharials quickly drown when enmeshed in nets
+Accidental killing in fishing operations
+Pollution from industrial and agricultural runoff
+Climate change affecting river flow patterns
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation</h4>
+                        <p class="text-[#94a3b8]">Conservation Status
+IUCN Red List: Critically Endangered
+<br>CITES: Appendix I (total international trade ban)
+<br>Indian Wildlife Protection Act (1972): Schedule I (highest protection)
+
+<br>National Chambal Gharial Sanctuary (1979–2025)
+<br>Population & Breeding Details (Chambal Centre, 2025)
+<br>Breeding Adults: 12 (6M, 6F)
+<br>Sub-adults (4–6 yrs): 18
+<br>Juveniles (2025): 34
+<br>Rescued, under treatment: 3
+<br>Non-releasable residents: 4
+
+<br>Conservation Milestones (1979–2025)
+<br>Total gharials bred & released: 4,847
+<br>Wild nests documented: 89
+<br>Wild population estimate (2025): 650+
+<br>River habitat restored: 1,200 km
+<br>Villages engaged: 78
+<br>Tourism income: ₹12 million annually
+<br>Research: 156 peer-reviewed studies
+<br>International collaborations: 45 gharials sent to zoos globally
+
+<br>Scientific Advances
+<br>Temperature-dependent sex determination perfected
+<br>Veterinary vaccination protocols introduced
+<br>Behavioral mapping and dietary studies completed
+<br>Satellite and sonar mapping of critical river zones</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#94a3b8] max-w-lg">
+                        The gharial is deeply interwoven with India's cultural and religious traditions. In Hindu mythology, it is revered as the mount of Varuna, the Vedic god of water. Its motifs are often found in temple carvings, and it is mentioned as a powerful river-dwelling reptile in ancient texts. Historically, the male gharial's nasal knob (ghara), fat, and eggs were used in traditional folk remedies. However, such practices are now outlawed under the Wildlife Protection Act, 1972. The gharial was once abundant in the major river systems of the Ganges, Indus, Brahmaputra, and Mahanadi, with population estimates in the 1940s ranging between 5,000 and 10,000 individuals.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/gharial_img2.png" alt="Gharial cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#94a3b8]">
+                            40% Habitat Degradation<br>
+                            30% Poaching & Illegal Trade<br>
+                            20% Bycatch & Prey Depletion<br>
+                            10% Genetic Challenges
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Chambal Centre Population (2025)</h4>
+                        <p class="text-[#94a3b8]">
+                            48% Juveniles<br>
+                            25% Sub-adults<br>
+                            17% Breeding Adults<br>
+                            10% Rescued/Non-releasable
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Milestones Impact</h4>
+                        <p class="text-[#94a3b8]">
+                            70% Gharials Bred & Released<br>
+                            20% Hatchling Survival Success<br>
+                            10% Habitat & Community Impact
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">National Chambal Gharial Sanctuary Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">1979</h4>
+                        <p class="text-[#94a3b8]">Project Gharial launched. Chambal Breeding Centre established. First successful hatch: 127 hatchlings from 300 eggs.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">1980s</h4>
+                        <p class="text-[#94a3b8]">Early breeding success with 1,847 gharials released by 1989. Captive hatchlings bred in Madras Crocodile Bank.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">1990s</h4>
+                        <p class="text-[#94a3b8]">Expansion with satellite centers in UP and Rajasthan. Hatch success rate improves to 85%. Community outreach in 45 riverside villages.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2000s</h4>
+                        <p class="text-[#94a3b8]">Technology and research advancements: GPS tagging of released individuals. Studies on prey fish and habitat needs. Joint projects with Nepal initiated.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2010s</h4>
+                        <p class="text-[#94a3b8]">Surveillance and community role strengthened. Nesting beaches monitored via camera traps. Community-based egg protection begins. Wild-born hatchlings from captive gharials confirmed.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2020–2025</h4>
+                        <p class="text-[#94a3b8]">Advanced measures implemented. Hatchling survival rate now at 76%. Genetic diversity preserved at 95%. February 2025: 10 gharials released into Chambal by Madhya Pradesh CM. 2,456 gharials recorded in 2024 Madhya Pradesh census.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <footer class="bg-[#0b121f] text-[#94a3b8] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e2e8f0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#94a3b8]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

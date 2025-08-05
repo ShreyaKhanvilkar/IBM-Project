@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Panda Conservation in India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #223322;
+            color: #e0ede0;
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #374137;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #4a5345;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #223322;
+            border: 4px solid #8bb18b;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #4a5345;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #4a5345 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .carousel-item {
+            text-align: center;
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #7b5c3e 0% 50%,
+                #154315 50% 75%,
+                #2e5b2e 75% 87.5%,
+                #4a784a 87.5% 100%
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #a37a50 0% 36.36%,
+                #7b5c3e 36.36% 63.63%,
+                #154315 63.63% 81.81%,
+                #2e5b2e 81.81% 100%
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #4a784a 0% 85%,
+                #a37a50 85% 90%,
+                #7b5c3e 90% 95%,
+                #154315 95% 100%
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#223322] text-[#e0ede0]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Red Panda Conservation in India</h1>
+                <p class="text-lg md:text-2xl text-[#a0b3a0] mb-8 animate-fade-in delay-200">The red panda (Ailurus fulgens) is a fascinating mammal native to the Eastern Himalayas, with a unique evolutionary history and a key role in conservation efforts. Despite its name, it isn't closely related to the giant panda. It's a solitary, arboreal animal with a mostly herbivorous diet of bamboo, and its scientific name, which means "shining cat," perfectly describes its striking reddish-brown fur.</p>
+                <img src="photos/red_panda_img1.jpg" alt="Red Panda Hero" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Taxonomy and Phylogeny</h3>
+                <p class="text-lg md:text-xl text-[#a0b3a0] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The red panda's scientific classification highlights its unique position in the animal kingdom. While it's in the Animalia kingdom, Chordata phylum, and Mammalia class, its order, Carnivora, is a bit of a misnomer, as its diet is predominantly bamboo. It is the sole living member of its own family, Ailuridae, which distinguishes it from other carnivores.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Subspecies</h4>
+                    <p class="text-lg md:text-xl text-[#a0b3a0]">Ailurus fulgens fulgens:** Found in the Eastern Himalayas, including India, Nepal, and Bhutan. It's smaller with a lighter facial mask.</p>
+                    <p class="text-lg md:text-xl text-[#a0b3a0]">Ailurus fulgens styani:** Found in northern Myanmar and southern China. This subspecies is slightly larger and has darker fur with more defined facial markings.</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">A Deeper Look</h3>
+                <p class="text-lg md:text-xl text-[#a0b3a0] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the red panda's story, from its evolutionary journey to its cultural importance and the threats it faces today.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper" text-align: center;>
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Origin and History</h4>
+                        <p class="text-[#a0b3a0]">Evolution of the Red Panda
+The red panda (Ailurus fulgens) belongs to the family Ailuridae, the only family within the order Carnivora specifically adapted for a bamboo-eating diet, though it also consumes fruits, acorns, and roots. Despite its bamboo diet, the red panda's evolutionary history diverges significantly from that of the giant panda, even though both species share some ecological traits. Red pandas are believed to have split from the common ancestor of the Musteloidea (a superfamily including weasels, otters, and martens) around 25 million years ago.
+1. Early Evolution (25–30 million years ago)
+The evolutionary journey of red pandas began when early ancestors of the species emerged in Eurasia during the Late Oligocene to Early Miocene period. Fossil evidence shows that these early species of Ailurus were more diverse, inhabiting regions across Europe, North America, and Asia.
+<br>
+
+2. Ailurus Genus Emergence (5–10 million years ago)
+The genus Ailurus, to which the modern red panda belongs, began to emerge around 5 to 10 million years ago. Early members of this genus, while still more generalized omnivores, started showing traits that would later define the red panda. These early ancestors were likely more versatile feeders before evolving into bamboo specialists.
+<br>
+
+3. Asian Evolution (2–3 million years ago)
+The red panda's evolutionary shift toward Asia took place as the species adapted to temperate forests and cooler climates. Fossil evidence points to the red panda’s ancestors inhabiting the Himalayan and southwestern Chinese mountain forests, which provided the necessary habitat for the species to evolve into the bamboo specialist it is today.
+<br>
+
+4. Modern Red Panda (1.5 million years ago to present)
+The modern species, Ailurus fulgens, is believed to have emerged around 1.5 million years ago. With its adaptations for an arboreal lifestyle and a bamboo-based diet, the red panda developed unique features such as a false "thumb" (an extended wrist bone) that aids in grasping bamboo stalks, allowing for easier feeding.
+<br>
+
+5. Fossil Evidence
+Fossil records indicate that red pandas were once more widespread than their current range, which is now limited to the Himalayas and parts of China. Fossils of red panda ancestors have been found across Europe, North America, and Asia, suggesting that the species once inhabited a much broader geographical area before becoming more geographically restricted.
+Scientific Discovery:
+The red panda was first described by Frédéric Cuvier in 1825, 48 years before the giant panda was discovered. Cuvier famously admired it as the “most beautiful animal” he had ever studied. The name Ailurus fulgens means "fire-colored shining cat," reflecting the animal's striking appearance. It was also the first animal ever referred to as a "panda," long before the giant panda earned the same title. The name came about due to their shared bamboo diet and overlapping habitats.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Taxonomy & Cultural Significance</h4>
+                        <p class="text-[#a0b3a0]">CULTURAL AND FOLK SIGNIFICANCE IN INDIA<br>
+In Indigenous Culture:
+Among the Lepcha, Bhutia, and Monpa tribes of Sikkim and Arunachal Pradesh, red pandas are regarded as sacred forest beings.
+Local taboos in older generations prohibited harming red pandas.
+They are seen as symbols of balance, forest health, and nature’s quiet grace.
+<br>
+
+In Religious Traditions:
+In certain Buddhist traditions, especially in Bhutan and Sikkim, red pandas are associated with peaceful spirits and meditative solitude.
+Stories describe them as protectors of sacred bamboo groves.
+<br>
+
+Modern Symbolism:
+Became a flagship species for conservation efforts in Eastern Himalayan forests.
+Chosen as the state animal of Sikkim.
+Mozilla Firefox’s logo and name are based on the red panda, not a fox.
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Threats to Survival</h4>
+                        <p class="text-[#a0b3a0]">Despite its protected status, the red panda population faces significant threats, primarily from human activities.
+Primary Threats:
+Habitat Loss and Fragmentation: The expansion of agriculture, timber extraction, and infrastructure development leads to the destruction of their forest habitat.
+Grazing Pressure: Livestock grazing in red panda habitats competes for food resources and degrades the forest understory.
+Predation: Domestic dogs, both feral and those belonging to herders, pose a significant threat to red pandas.
+Accidental Snaring: A major threat is unintentional trapping in snares meant for larger animals like deer or wild pigs.
+<br>Poaching and Illegal Trade:
+While India has seen a decline in intentional poaching, incidents still occur.
+<br>Arunachal Pradesh Poaching Report (2019):
+Survey of 968 people across 147 villages found 1 recent and 6 historical cases of red panda poaching in Anjaw District.
+Most red pandas were accidental victims of snares set for other animals.
+In China and Bhutan, red panda pelts have been sold illegally for decorative hats and clothing.
+In Nepal, 121 pelts were confiscated between 2008–2018, with a spike in 2017.
+However, awareness campaigns are showing results.
+Younger generations reportedly do not desire red panda fur or meat.
+Poaching is decreasing in India, thanks to education and enforcement.
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation</h4>
+                        <p class="text-[#a0b3a0]">CONSERVATION STATUS
+<br>IUCN Red List Status:
+<br>1996: Classified as Vulnerable
+<br>2008: Upgraded to Endangered
+<br>2015: Endangered status reconfirmed
+
+
+<br>Indian Legal Status:
+Listed under Schedule I of the Indian Wildlife Protection Act (1972)
+ → This offers the highest protection level, with severe penalties for hunting or trade.
+
+
+<br>Major Protected Areas for Red Pandas in India:
+<br>Khangchendzonga National Park (Sikkim)
+<br>Singalila National Park (West Bengal)
+<br>Neora Valley National Park (West Bengal)
+<br>Namdapha National Park (Arunachal Pradesh)
+
+
+Conservation Initiative in India:
+Red panda conservation in India has evolved over time, from legal protection to active breeding and rewilding programs.
+Pre-1900s: Indigenous communities lived in harmony with red pandas.
+1972: The red panda was listed under Schedule I of the Wildlife Protection Act, providing the first major legal protection.
+1983: Captive breeding efforts began at the Padmaja Naidu Himalayan Zoological Park in Darjeeling, a crucial step in ensuring the species' survival.
+1990s: Key red panda habitats were integrated into protected areas like Singalila and Namdapha National Parks.
+2003: The red panda became the official state animal of Sikkim, raising its profile and promoting conservation awareness.
+2005-2010: India partnered with international organizations like the Red Panda Network to create a unified conservation strategy across its borders with Nepal and Bhutan.
+2014-2015: The "Habre's Nest" ecotourism model was launched in Singalila, training local residents as "Panda Guardians" to protect the species and its habitat. This approach provides economic benefits to local communities, thereby encouraging conservation.
+2018: A landmark moment occurred when captive-bred red pandas from the Darjeeling Zoo were released into the wild for the first time, marking a significant step toward rewilding efforts.
+2020: Indian scientists initiated DNA barcoding to study the genetic diversity of red panda populations and better understand the subspecies in India.
+2021: Wildlife biologists proposed the creation of habitat corridors to connect fragmented red panda populations in Northeast India, which is critical for maintaining genetic diversity and ensuring long-term survival.
+2023-2025: Technology has become an integral part of conservation efforts, with the deployment of drones, GPS collars, and AI-enabled cameras to monitor and protect red pandas.
+
+</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#a0b3a0] max-w-lg">
+                        In India, the red panda is more than just a wild animal; it holds deep cultural and spiritual significance, particularly among the indigenous communities of Sikkim and Arunachal Pradesh.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/red_panda_img5.avif" alt="Red Panda in Sikkim" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#a0b3a0]">
+                            50% Habitat Loss & Fragmentation<br>
+                            25% Grazing Pressure<br>
+                            12.5% Domestic Dog Predation<br>
+                            12.5% Accidental Snaring & Poaching
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Himalayan Red Panda Conservation Centre (Population)</h4>
+                        <p class="text-[#a0b3a0]">
+                            4 Adult Males (36%)<br>
+                            3 Adult Females (27%)<br>
+                            2 Subadults (18%)<br>
+                            2 New Cubs (18%)
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#a0b3a0]">
+                            85% Cub Survival Rate<br>
+                            Educated >15,000 Locals<br>
+                            45 Acres of Reforested Land<br>
+                            24/7 Patrols
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Detailed Conservation Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">1972</h4>
+                        <p class="text-[#a0b3a0]">Red panda listed under Schedule I of the Wildlife Protection Act, providing the first major legal protection.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">1983</h4>
+                        <p class="text-[#a0b3a0]">Captive breeding efforts begin at the Padmaja Naidu Himalayan Zoological Park in Darjeeling.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2003</h4>
+                        <p class="text-[#a0b3a0]">The red panda becomes the official state animal of Sikkim.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2018</h4>
+                        <p class="text-[#a0b3a0]">Captive-bred red pandas are released into the wild for the first time.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2019</h4>
+                        <p class="text-[#a0b3a0]">Himalayan Red Panda Conservation Centre opens near Gangtok, Sikkim.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2021</h4>
+                        <p class="text-[#a0b3a0]">The center achieves its first successful breeding with "Dolma" and "Norbu."</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2025</h4>
+                        <p class="text-[#a0b3a0]">Two adults are scheduled for release from the conservation center, which now houses nine pandas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#1a201a] text-[#a0b3a0] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#e0ede0] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e0ede0] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#e0ede0] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Oppotunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#a0b3a0]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

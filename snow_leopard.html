@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snow Leopard Conservation in India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #eceff4;
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #2e3a47;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #4a5362;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #1a202c;
+            border: 4px solid #b2c2d6;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #4a5362;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #4a5362 transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #ef4444 0% 60%,
+                #f97316 60% 80%,
+                #eab308 80% 95%,
+                #64748b 95% 100%
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #fcd34d 0% 33.3%,
+                #84cc16 33.3% 66.6%,
+                #ef4444 66.6% 83.3%,
+                #64748b 83.3% 100%
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #3b82f6 0% 92%,
+                #a37a50 92% 100%
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#1a202c] text-[#eceff4]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Snow Leopard: The Grey Ghost of Himalayas</h1>
+                <p class="text-lg md:text-2xl text-[#a0b3a0] mb-8 animate-fade-in delay-200">The snow leopard is a master of camouflage, earning it the nickname "Grey Ghost." This elusive predator is a symbol of the rugged, high-altitude landscapes it calls home, and a flagship species for conservation across the Himalayas.</p>
+                <img src="photos/snow_leopard_img1.jpg" alt="Snow Leopard Hero" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Taxonomy and Names</h3>
+                <p class="text-lg md:text-xl text-[#a0b3a0] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The snow leopard's scientific classification is a testament to its unique evolutionary path, positioning it within the genus Panthera alongside lions and tigers.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Classification</h4>
+                    <p class="text-lg md:text-xl text-[#a0b3a0]">Binomial Name: Panthera uncia</p>
+                    <p class="text-lg md:text-xl text-[#a0b3a0]">Family: Felidae</p>
+                    <p class="text-lg md:text-xl text-[#a0b3a0]">Closest Relatives: Genetically closest to the tiger, with a shared ancestor from millions of years ago.</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Story of the Snow Leopard</h3>
+                <p class="text-lg md:text-xl text-[#a0b3a0] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the snow leopard's evolutionary origin, its cultural significance, and the threats it faces today.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Origin of Panthera</h4>
+                        <p class="text-[#a0b3a0]">The genus Panthera, to which the snow leopard belongs, most likely originated in northern Central Asia.
+The snow leopard (Panthera uncia) is genetically close to the tiger (Panthera tigris), with a divergence estimated to have occurred between 3.7 to 2.7 million years ago. They form a sister group, meaning they share a common ancestor before diverging into separate species.
+Panthera blytheae (ca. 6.2 million years ago): The earliest known Panthera species is Panthera blytheae, excavated from western Tibet's Ngari Prefecture. This species has skull features similar to the snow leopard, though its exact taxonomic placement is debated. Some researchers suggest it could belong to a different genus altogether.
+Late Pleistocene (ca. 126,000 – 11,700 years ago): The first definitive record of the modern snow leopard comes from the Late Pleistocene, identified through fossils found in the Niuyan Cave in China. These remains show clear similarities to today’s snow leopard.
+Middle Pleistocene (ca. 780,000 – 126,000 years ago): Fossils referred to as Panthera aff. uncia were found at the Zhoukoudian Peking Man Site in China. These fossils closely resemble the modern snow leopard, confirming the species' presence during this period.
+Early Pleistocene (ca. 2.6 million – 780,000 years ago): Putative snow leopard fossils from the Pabbi Hills of Pakistan have been dated to the Early Pleistocene. However, these fossils might also represent a leopard or a different genus, such as Puma.
+Pleistocene European Paleosubspecies (ca. 0.53 – 0.57 million years ago): Fossils found in France were attributed to Panthera uncia pyrenaica, a European subspecies of the snow leopard. These fossils date to the early Middle Pleistocene, around 0.57 to 0.53 million years ago.
+Further discoveries in Portugal led to the description of Panthera uncia lusitana in 2025, dating to the Late Pleistocene. Some researchers believe these fossils may reflect an adaptation to European rocky environments or migration patterns during the Mid-Pleistocene Transition (around 0.9 million years ago).
+Mitochondrial Genome Insights: Studies show that the mitochondrial genomes of the snow leopard, leopard (Panthera pardus), and lion (Panthera leo) are more similar to one another than their nuclear genomes, suggesting that hybridization may have occurred in their evolutionary past, possibly contributing to the current genetic diversity observed in these species.
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Efforts</h4>
+                        <p class="text-[#a0b3a0]">Conservation Status
+IUCN Status: Vulnerable
+CITES: Appendix I
+Indian Wildlife (Protection) Act, 1972: Schedule I
+Estimated Indian Population: ~400–700 individuals
+Conservation Projects:
+Project Snow Leopard (2009) – community-based protection
+Snow Leopard Cell (Ministry of Environment, Forest and Climate Change)
+GSLEP (Global Snow Leopard & Ecosystem Protection Program)
+
+Conservation Initiative in India:
+Trans-Himalayan Snow Leopard Rescue Centre (Ladakh & Spiti)
+2018 – Foundation
+Established at 4,200m in Ladakh
+First rescue: "Stanzin" with severe leg snare injuries
+High-altitude trauma care facility launched
+
+
+2019 – Infrastructure
+8 enclosures mimicking wild terrain
+Cultural partnerships with monasteries
+Two leopards successfully treated and rewilded
+
+
+2020 – Research
+Satellite tracking of released animals
+Prey preference mapping at different altitudes
+Operated fully during COVID using local staff
+
+
+2021 – Community Engagement
+"Snow Leopard Guardian" program started
+Livestock compensation scheme in 12 villages
+First captive breeding success, cubs released into wild
+
+
+2022 – Expansion
+Spiti Valley facility established
+Orphaned cubs "Leh" and "Nubra" become mascots
+2,400 sq km monitored through GPS collars
+
+
+2023 – Scientific Collaboration
+Partnered with Snow Leopard Trust for genetic work
+AI-enabled camera traps deployed
+4 rehabilitated snow leopards released
+
+
+2024 – Technology Upgrade
+AI analysis of camera data implemented
+District-wide emergency response network created
+18 injured animals successfully treated
+
+
+2025 – Current Operations
+Monitoring 23 GPS-collared individuals
+Cross-border collaboration with Pakistan and China
+92% success in rehabilitation protocols
+
+</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Distribution, Habitat, and Food</h4>
+                        <p class="text-[#a0b3a0]">Snow leopards in India are confined to the higher elevations of the Himalayan and trans-Himalayan regions. Their preferred habitats include alpine meadows, rocky outcrops, and glacial valleys, typically between 3,000 and 5,500 meters.
+Distribution Across India: Ladakh (Jammu & Kashmir and Union Territory), Himachal Pradesh, Uttarakhand (Gangotri, Nanda Devi areas), Sikkim and Arunachal Pradesh (Eastern Himalayas)
+The snow leopard (Panthera uncia) is a carnivorous apex predator, perfectly adapted to the harsh, mountainous terrain of Central and South Asia. As an obligate carnivore, it relies exclusively on meat to survive.
+Primary Prey: Snow leopards primarily hunt medium to large-sized herbivores found in alpine and subalpine ecosystems: Blue sheep (bharal), Himalayan tahr, Argali (mountain sheep), Ibex, Markhor
+Secondary/Opportunistic Prey: In addition to their main prey, snow leopards may hunt smaller animals when larger prey is scarce: Pikas, Marmots, Hares, Game birds (e.g., snowcocks, pheasants), Rodents
+Livestock Predation: In human-dominated landscapes, snow leopards may attack: Sheep, Goats, Yaks, Horses. This often brings them into conflict with local herders, contributing to conservation challenges.
+Feeding Behavior: A snow leopard can kill prey 3 times its own weight. It may take several days to consume a large kill, returning to feed while caching the remains from scavengers. They typically hunt once every 8–10 days, depending on prey availability and kill size.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Threats and Poaching</h4>
+                        <p class="text-[#a0b3a0]">Poaching and Illegal Trade: Snow leopards are illegally hunted for their pelts(fur coats, rugs), bones (for Chinese and Tibetan traditional medicine), teeth and claws (as talismans), etc. Globally, an estimated 439 snow leopards were killed for trade between 2008 and 2018. While no new poaching cases have been reported in India since 2016, this is a fragile achievement that requires constant vigilance. Estimated 60% of killings go unreported or are falsely tagged as “retaliatory”
+Human-Wildlife Conflict: A major cause of death is retaliatory killing by herders in response to livestock predation. The loss of wild prey forces snow leopards to hunt domestic animals, leading to conflict.
+Habitat Threats: Climate change is causing habitat shifts, altering vegetation zones and affecting prey migration. Infrastructure development and military presence in border areas also fragment their habitat and disrupt their movement.
+Poaching Incidents in India: 1994–2021: At least 43 documented killings. Since 2016: No new poaching cases reported—sign of strong enforcement. Gangotri region: Identified as hotspot for contraband movement.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Conservation Efforts</h3>
+                    <p class="text-lg md:text-xl text-[#a0b3a0] max-w-lg">
+                        The snow leopard is more than just an animal; it is a spiritual icon in the Himalayas. For millennia, it has been revered as a sacred being, earning it the nickname "Ghost of the Mountains" due to its elusive nature.
+Spiritual and Mythological Role: 
+In Tibetan Buddhism, snow leopards are seen as protectors of sacred peaks. 
+Ladakhi folklore often describes them as the spirits of enlightened monks or as mountain guardians.
+Symbolism: Strength, Mysticism, and Endurance
+Conservation Icon: By the mid-20th century, the snow leopard was severely threatened by rampant hunting for its luxurious fur. This crisis led to its placement in CITES Appendix I in 1972 and its classification as Endangered by the IUCN in 1986, galvanizing global conservation efforts. Its status was later downgraded to Vulnerable in 2017 due to improved population estimates and conservation programs. Today, the snow leopard is a national icon of Ladakh and Himachal Pradesh and a flagship species for the entire Himalayan ecosystem.
+
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/snow_leopard_img3.webp" alt="Snow Leopard in Habitat" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Threats</h4>
+                        <p class="text-[#a0b3a0]">
+                            60% Poaching & Illegal Trade<br>
+                            20% Retaliatory Killing<br>
+                            15% Habitat Threats<br>
+                            5% Other
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Status</h4>
+                        <p class="text-[#a0b3a0]">
+                            1986: Endangered<br>
+                            2017: Vulnerable<br>
+                            <br>
+                            A testament to conservation efforts.
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Center Success</h4>
+                        <p class="text-[#a0b3a0]">
+                            92% Success in Rehabilitation Protocols<br>
+                            18 injured animals successfully treated.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Trans-Himalayan Snow Leopard Rescue Centre</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2018</h4>
+                        <p class="text-[#a0b3a0]">Rescue Centre established at 4,200m in Ladakh. First rescue, "Stanzin," treated for severe snare injuries.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2019</h4>
+                        <p class="text-[#a0b3a0]">8 enclosures built to mimic wild terrain. Two leopards successfully treated and rewilded.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2021</h4>
+                        <p class="text-[#a0b3a0]">'Snow Leopard Guardian' program launched. First captive breeding success, cubs released into the wild.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2023</h4>
+                        <p class="text-[#a0b3a0]">Partnered with Snow Leopard Trust for genetic work. AI-enabled camera traps deployed.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2025</h4>
+                        <p class="text-[#a0b3a0]">Currently monitoring 23 GPS-collared individuals. Cross-border collaboration with Pakistan and China initiated.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#1a202c] text-[#a0b3a0] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#eceff4] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#eceff4] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#eceff4] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Oppotunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#a0b3a0]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

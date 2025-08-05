@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganges River Dolphin: Conservation Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #00203F; /* Dark Blue */
+            color: #ADEFD1; /* Light Aqua */
+            overflow-x: hidden;
+        }
+        .animate-fade-in, .animate-scale-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .animate-scale-up {
+            transform: scale(0.95);
+            transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .animate-fade-in.is-visible, .animate-scale-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        #hero-image-wrapper {
+            position: relative;
+            transform: translateY(-5%);
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #hero-image-wrapper.scrolled {
+            transform: translateY(0);
+        }
+        .horizontal-carousel-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+        }
+        .horizontal-carousel-container {
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            transform: translateX(0);
+            transition: transform 0.1s linear;
+        }
+        .carousel-item {
+            width: 80vw;
+            height: auto;
+            margin-right: 2rem;
+            flex-shrink: 0;
+            padding: 2rem;
+            background-color: #003049; /* Darker Blue */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .carousel-item:first-child {
+            margin-left: 10vw;
+        }
+        .carousel-scroll-spacer {
+            height: 300vh;
+        }
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #2D4A5E; /* Medium Blue */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-event {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: #00203F; /* Dark Blue */
+            border: 4px solid #FCB5AC; /* Light Coral Accent */
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-event.left {
+            left: 0;
+        }
+        .timeline-event.right {
+            left: 50%;
+        }
+        .timeline-event.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #2D4A5E;
+        }
+        .timeline-event.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #2D4A5E transparent transparent;
+        }
+        .timeline-event.right::after {
+            left: -16px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            .timeline-event {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-event::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .timeline-event.right::after {
+                left: 15px;
+            }
+        }
+        .pie-chart {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pie-chart.chart1 {
+            background-image: conic-gradient(
+                #FF6347 0% 40%, /* Poaching & Direct Killing */
+                #FFD700 40% 70%, /* Habitat Fragmentation & Degradation */
+                #6B8E23 70% 90%, /* Fishing-Related Mortality */
+                #4682B4 90% 100% /* Genetic Challenges */
+            );
+        }
+        .pie-chart.chart2 {
+            background-image: conic-gradient(
+                #3CB371 0% 33%, /* Adults */
+                #98FB98 33% 55%, /* Rehab */
+                #66CDAA 55% 72%, /* Rescues */
+                #20B2AA 72% 83%, /* Research */
+                #5F9EA0 83% 100% /* Permanent */
+            );
+        }
+        .pie-chart.chart3 {
+            background-image: conic-gradient(
+                #008000 0% 60%, /* Successfully Released */
+                #32CD32 60% 80%, /* Breeding Success */
+                #6B8E23 80% 100% /* Community/Habitat/Research */
+            );
+        }
+    </style>
+</head>
+<body class="bg-[#00203F] text-[#ADEFD1]">
+    <main class="w-full">
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-24 pb-16 relative">
+            <div id="hero-image-wrapper" class="w-full max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 animate-fade-in">Ganges River Dolphin: The Long-Nosed Crocodile</h1>
+                <p class="text-lg md:text-2xl text-[#94A3B8] mb-8 animate-fade-in delay-200">A unique freshwater dolphin with a long, thin snout, distinctive rectangular dorsal fin, and paddle-shaped flippers. Essentially blind, they rely entirely on echolocation. This ancient lineage is a National Aquatic Animal and a vital indicator of river health.</p>
+                <img src="photos/dolphin_img1.avif" alt="Ganges River Dolphin Hero Image" class="w-full h-auto rounded-xl shadow-2xl animate-fade-in delay-500">
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Names and Scientific Classification</h3>
+                <p class="text-lg md:text-xl text-[#94A3B8] max-w-2xl mx-auto mb-16 animate-fade-in delay-200">
+                    The Ganges River Dolphin's scientific name, Platanista gangetica, highlights its unique adaptation to the Ganges river system. Its common name "Susu" is an onomatopoeic reflection of the sound it makes while breathing.
+                </p>
+                <div class="relative w-full rounded-xl overflow-hidden shadow-2xl mb-16 animate-scale-up">
+                    <h4 class="text-2xl font-bold mb-2">Scientific Name</h4>
+                    <p class="text-lg md:text-xl text-[#94A3B8]">Platanista gangetica</p>
+                    <h4 class="text-2xl font-bold mb-2 mt-4">Common English Names</h4>
+                    <p class="text-lg md:text-xl text-[#94A3B8]">Ganges River Dolphin, South Asian River Dolphin, Blind River Dolphin</p>
+                </div>
+            </div>
+        </section>
+        <section id="carousel-parent" class="relative">
+            <div id="carousel-section" class="pt-24 text-center animate-fade-in">
+                <h3 class="text-4xl md:text-5xl font-bold mb-4">The Dolphin's Ancient Echoes</h3>
+                <p class="text-lg md:text-xl text-[#94A3B8] max-w-2xl mx-auto mb-16">
+                    Scroll down to explore the Ganges River Dolphin's evolutionary journey, its profound cultural significance, the threats it faces, and the dedicated conservation efforts to protect it.
+                </p>
+            </div>
+            <div class="horizontal-carousel-wrapper">
+                <div id="carousel-container" class="horizontal-carousel-container">
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Their Story - Origin, History & Historical Significance</h4>
+                        <p class="text-[#94A3B8]">Evolutionary Journey: The Ganges river dolphin represents one of the most ancient lineages of cetaceans, having adapted to freshwater environments millions of years ago. They belong to the river dolphin superfamily, which diverged from oceanic dolphins approximately 30 million years ago. Their evolution in the murky waters of South Asian rivers led to the complete loss of functional vision, making them essentially blind and dependent entirely on echolocation for navigation and hunting.
+Scientific Discovery and Classification: Although the Ganges dolphin is mentioned in mythological and historical literature, its occurrence in the Hooghly River was first documented in 1801 by William Roxburgh, Superintendent of the Botanical Garden, Calcutta. Lebeck's type description is based on an adult male specimen collected in November 1797 from close to Calcutta, India, and it is thought that this is the same material that Roxburgh based his description on. The species has undergone significant taxonomic revision over the centuries, with various scientists proposing different classifications. The current scientific consensus recognizes it as Platanista gangetica, distinct from its cousin the Indus river dolphin.
+Cultural and Historical Significance: The Ganges river dolphin holds profound cultural and spiritual significance in Indian civilization, intertwined with the sacred nature of the Ganges River itself.
+Religious and Mythological Importance: National Recognition: Recognized by the Government of India as its National Aquatic Animal and is the official animal of the Indian city of Guwahati. Sacred Waters: Associated with the holy Ganges River, considered sacred in Hindu tradition. Ancient Sanskrit Texts: Referenced as "Shishúmára" in Vedic literature. River Goddess Connection: Linked to Ganga Devi, the river goddess in Hindu mythology. Spiritual Symbolism: Represents the pure essence of sacred rivers and divine flow.
+Cultural Legacy: Folk Names: Known as "Susu" onomatopoeically for the sound they make while breathing. Traditional Knowledge: Local fishing communities have observed and coexisted with these dolphins for millennia. Regional Identity: Symbol of riverine culture in Bengal, Bihar, and Assam. Conservation Icon: Became flagship species for Ganges River conservation efforts.
+Historical Timeline: Ancient Period: Referenced in Sanskrit literature and local folklore. 1797: First specimen collected near Calcutta. 1801: Scientific documentation by William Roxburgh and description by Lebeck. 1830: Genus name Platanista coined by Johann Georg Wagler. 1972: Listed in Schedule I of India's Wildlife Protection Act. 2009: Declared National Aquatic Animal of India. Present: Population critically reduced to fewer than 2,000 individuals.
+Modern Conservation Recognition: The species has become a symbol of India's commitment to freshwater ecosystem conservation and serves as an indicator species for the health of the Ganges River system, one of the world's most important river basins supporting over 400 million people.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Cultural and Historical Significance</h4>
+                        <p class="text-[#94A3B8]">The Ganges river dolphin holds profound cultural and spiritual significance in Indian civilization, intertwined with the sacred nature of the Ganges River itself.
+Religious and Mythological Importance: National Recognition: Recognized by the Government of India as its National Aquatic Animal and is the official animal of the Indian city of Guwahati. Sacred Waters: Associated with the holy Ganges River, considered sacred in Hindu tradition. Ancient Sanskrit Texts: Referenced as "Shishúmára" in Vedic literature. River Goddess Connection: Linked to Ganga Devi, the river goddess in Hindu mythology. Spiritual Symbolism: Represents the pure essence of sacred rivers and divine flow.
+Cultural Legacy: Folk Names: Known as "Susu" onomatopoeically for the sound they make while breathing. Traditional Knowledge: Local fishing communities have observed and coexisted with these dolphins for millennia. Regional Identity: Symbol of riverine culture in Bengal, Bihar, and Assam. Conservation Icon: Became flagship species for Ganges River conservation efforts.
+Historical Timeline: Ancient Period: Referenced in Sanskrit literature and local folklore. 1797: First specimen collected near Calcutta. 1801: Scientific documentation by William Roxburgh and description by Lebeck. 1830: Genus name Platanista coined by Johann Georg Wagler. 1972: Listed in Schedule I of India's Wildlife Protection Act. 2009: Declared National Aquatic Animal of India. Present: Population critically reduced to fewer than 2,000 individuals.
+Modern Conservation Recognition: The species has become a symbol of India's commitment to freshwater ecosystem conservation and serves as an indicator species for the health of the Ganges River system, one of the world's most important river basins supporting over 400 million people.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Poaching Incidents and Threats</h4>
+                        <p class="text-[#94A3B8]">Current Conservation Status: The Ganges river dolphin is classified as Endangered by the IUCN. Once present in tens of thousands of numbers, the Ganges river dolphin has dwindled abysmally to less than 2000 during the last century owing to direct killing, habitat fragmentation by dams and barrages and indiscriminate fishing.
+Poaching and Direct Killing: Despite legal protection, the species faces multiple forms of direct human persecution: Traditional Uses and Illegal Trade: Entanglement in fishing nets as bycatch can cause significant damage to local populations, and individuals are taken each year by hunters; their oil and meat are used as a liniment, as an aphrodisiac, and as bait. Historical and Current Killing: Oil Extraction: Dolphin oil traditionally used for medicinal purposes and as lamp fuel. Fishing Bait: Meat used as bait for catfish, particularly valuable for large fish. Traditional Medicine: Body parts used in folk remedies despite no scientific basis. Accidental Killing: Many deaths occur through fishing net entanglement.
+Systematic Threats and Modern Challenges: Habitat Fragmentation: The Gangetic dolphin faces several threats including dam and barrage construction, water pollution, overfishing and motorised transport. Dolphins trapped above a dam are exposed to poaching, especially during dry summer months. Dolphins below a dam are threatened by heavy pollution, increased fishing activities.
+Environmental Degradation: Water Pollution: Chemical runoff, sewage, and industrial waste affecting water quality. Sand Mining: Illegal sand mining is increasing the danger for Gangetic dolphins according to senior scientist at the Zoological Survey of India. Reduced Water Flow: Over-extraction for irrigation and industrial use. Noise Pollution: Motorboat traffic interfering with echolocation.
+Fishing-Related Mortality: The threats include poaching, by-catches, decline in prey fishes largely driven by human population explosion, decrease in depths of the rivers and consequent increases in fishing pressures.
+Regional Threat Assessment: Ganges Main Stem: Heavy pollution, dam construction, intensive fishing. Brahmaputra System: Habitat fragmentation, declining fish populations. Chambal River: Relatively better conservation but still facing poaching pressure. Tributaries: Severe habitat degradation, local extinctions in many smaller rivers.
+Legal Protection: Protected under Schedule I of the Wildlife (Protection) Act, 1972. Killing and poaching are cognizable offenses, with offenders facing fines up to $500 US and/or 7-year imprisonment.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h4 class="text-2xl font-bold mb-4">Conservation Timeline (Sanctuary Perspective)</h4>
+                        <p class="text-[#94A3B8]">Ganga-Brahmaputra Dolphin Research & Rescue Centre - Established 2020
+2020 - Foundation During Pandemic: Specialized freshwater dolphin facility established near Patna, Bihar. Emergency response network created across 1,200 km of Ganges system. First major rescue: 3 dolphins trapped in shallow irrigation canal during COVID lockdown. Partnership with local fishing communities for rescue operations.
+2021 - Infrastructure and Research: Built 4 large rehabilitation pools with advanced filtration systems mimicking river conditions. Established mobile veterinary unit for on-site treatment of stranded dolphins. GPS tracking program initiated for released individuals. First successful treatment of severely injured dolphin: "Ganga" - female with propeller cuts.
+2022 - Community Integration: "Susu Suraksha" (Dolphin Protection) program launched in 45 riverside villages. Training provided to 120 fishermen as first-response rescue volunteers. Successfully treated 8 dolphins for various injuries and illnesses. Established fish restocking program to improve prey availability.
+2023 - Technology and Monitoring: Underwater acoustic monitoring system installed to track dolphin populations. Collaboration with IIT Kanpur for echolocation research. First evidence of breeding success from released dolphins. Community compensation scheme for fishing gear lost during rescue operations.
+2024 - Expanded Operations: Opened satellite facility in Guwahati for Brahmaputra population. Advanced medical protocols developed for treating fishing net injuries. Successful rescue of mother-calf pair trapped above dam. International collaboration with river dolphin experts from Amazon and Yangtze programs.
+2025 - Current Advanced Operations: State-of-the-art medical facility capable of complex surgeries on cetaceans. Real-time water quality monitoring across dolphin habitats. Breeding research program to understand reproduction in captivity. Leading research on climate change impacts on river dolphin behavior.
+Rhino-Friendly Villages: 67 villages certified in sustainable practices
+Alternative Livelihoods: 800 families engaged in eco-tourism and handicrafts
+School Education: Rhino conservation curriculum in 89 schools
+Women's Cooperatives: 45 self-help groups involved in organic farming
+Youth Rangers: 234 young people trained in wildlife monitoring
+Compensation Schemes: ₹15 million paid for crop damage and livestock losses
+The Indian rhinoceros represents one of conservation's greatest triumphs - proof that dedicated protection, community involvement, and scientific management can bring a species back from the very edge of extinction. Every individual we save carries the genetic legacy of millions of years of evolution and embodies the hope for wildlife conservation across Asia.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-scroll-spacer"></div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-12">
+                <div class="w-full md:w-1/2 text-center md:text-left animate-fade-in">
+                    <h3 class="text-4xl md:text-5xl font-bold mb-4">Cultural and Historical Significance in India</h3>
+                    <p class="text-lg md:text-xl text-[#94A3B8] max-w-lg">
+                        The Ganges river dolphin holds profound cultural and spiritual significance in Indian civilization, intertwined with the sacred nature of the Ganges River itself. It is recognized by the Government of India as its National Aquatic Animal and is the official animal of the Indian city of Guwahati. Associated with the holy Ganges River, it is considered sacred in Hindu tradition and referenced as "Shishúmára" in Vedic literature. Linked to Ganga Devi, the river goddess, it represents the pure essence of sacred rivers and divine flow. Known as "Susu" for the sound they make, these dolphins have coexisted with local fishing communities for millennia, becoming a symbol of riverine culture and a flagship species for Ganges River conservation efforts.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 animate-scale-up">
+                    <img src="photos/dolphin_img2.jpg" alt="Ganges River Dolphin cultural depiction" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center animate-fade-in">
+                        <div class="pie-chart chart1 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Primary Threats</h4>
+                        <p class="text-[#94A3B8]">
+                            40% Poaching & Direct Killing<br>
+                            30% Habitat Fragmentation & Degradation<br>
+                            20% Fishing-Related Mortality<br>
+                            10% Genetic Challenges
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-200">
+                        <div class="pie-chart chart2 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Sanctuary Population (2025)</h4>
+                        <p class="text-[#94A3B8]">
+                            33% Adults<br>
+                            22% Rehabilitation Candidates<br>
+                            17% Recent Rescues<br>
+                            11% Research Subjects<br>
+                            17% Permanent Residents
+                        </p>
+                    </div>
+                    <div class="text-center animate-fade-in delay-400">
+                        <div class="pie-chart chart3 mx-auto mb-4 w-24 h-24 rounded-full"></div>
+                        <h4 class="text-2xl font-semibold mb-2">Conservation Impact</h4>
+                        <p class="text-[#94A3B8]">
+                            60% Successfully Released<br>
+                            20% Breeding Success<br>
+                            20% Community & Habitat Impact
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 w-full text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h3 class="text-4xl md:text-5xl font-bold mb-8 animate-fade-in">Ganga-Brahmaputra Dolphin Research & Rescue Centre Timeline</h3>
+                <div class="timeline-container">
+                    <div class="timeline-event right animate-fade-in">
+                        <h4 class="text-2xl font-semibold mb-1">2020</h4>
+                        <p class="text-[#94A3B8]">Centre established near Patna. First major rescue: 3 dolphins trapped in irrigation canal during COVID lockdown.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2021</h4>
+                        <p class="text-[#94A3B8]">Rehabilitation pools built. Mobile veterinary unit established. First successful treatment of injured dolphin: "Ganga".</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2022</h4>
+                        <p class="text-[#94A3B8}]">"Susu Suraksha" program launched in 45 villages. 120 fishermen trained as rescue volunteers. Fish restocking program established.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2023</h4>
+                        <p class="text-[#94A3B8]">Underwater acoustic monitoring system installed. Collaboration with IIT Kanpur for echolocation research. First breeding success from released dolphins.</p>
+                    </div>
+                    <div class="timeline-event right animate-fade-in delay-400">
+                        <h4 class="text-2xl font-semibold mb-1">2024</h4>
+                        <p class="text-[#94A3B8]">Satellite facility opened in Guwahati. Advanced medical protocols developed. Successful rescue of mother-calf pair trapped above dam.</p>
+                    </div>
+                    <div class="timeline-event left animate-fade-in delay-200">
+                        <h4 class="text-2xl font-semibold mb-1">2025</h4>
+                        <p class="text-[#94A3B8]">State-of-the-art medical facility. Real-time water quality monitoring. Breeding research program. Leading research on climate change impacts.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-[#00182D] text-[#94A3B8] text-sm py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+                <h5 class="text-[#ADEFD1] font-semibold mb-2">About Us</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Our Mission</a></li>
+                    <li><a href="#" class="hover:underline">Our Goals</a></li>
+                    <li><a href="#" class="hover:underline">Our Promise</a></li>
+                    <li><a href="#" class="hover:underline">Our Accomplishments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#ADEFD1] font-semibold mb-2">Rehome</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Shelters</a></li>
+                    <li><a href="#" class="hover:underline">History</a></li>
+                    <li><a href="#" class="hover:underline">Statistics</a></li>
+                    <li><a href="#" class="hover:underline">Workings</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-[#ADEFD1] font-semibold mb-2">Resources</h5>
+                <ul class="space-y-1">
+                    <li><a href="#" class="hover:underline">Contact Us</a></li>
+                    <li><a href="#" class="hover:underline">Join Our Cause</a></li>
+                    <li><a href="#" class="hover:underline">Volunteering Opportunities</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-700">
+            <p class="text-center text-[#94A3B8]">
+                Copyright © 2025 Naksha Aranya. All rights reserved.
+            </p>
+        </div>
+    </footer>
+     <script src="script.js"></script>
+</body>
+</html>
