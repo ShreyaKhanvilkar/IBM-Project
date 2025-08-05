@@ -1,0 +1,294 @@
+/* tourism-style.css */
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* Section Container */
+section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Hero Section */
+.hero {
+  background: url('eco-tourism-hero.jpg') no-repeat center center/cover;
+  color: #fff;
+  text-align: center;
+  padding: 120px 20px;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.3em;
+}
+
+.hero img {
+    height: 500px;
+    width: 800px;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 20px;
+  background-color: #2c7a7b;
+  color: #fff;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #285e61;
+}
+
+/* Why Eco-Tourism */
+.eco-tourism-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  max-width: 1200px;
+}
+
+.eco-text {
+  flex: 1 1 45%;
+}
+
+.eco-text h2 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.eco-text p {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.eco-image {
+  flex: 1 1 45%;
+  text-align: center;
+}
+
+.eco-image img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+
+/* Tour Packages */
+.tour-packages-section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.tour-packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.package-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.package-card h3 {
+  margin-bottom: 10px;
+  color: #2c7a7b;
+}
+
+.package-card ul {
+  list-style: disc inside;
+  margin-bottom: 10px;
+  padding-left: 0;
+}
+
+.package-card .details {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.book-btn {
+  text-decoration: none;
+  color: #fff;
+  background-color: #2c7a7b;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.book-btn:hover {
+  background-color: #246b24;
+}
+
+.package-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.package-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* Testimonials Carousel */
+.testimonials {
+  background-color: #e6fffa;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 300px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.carousel-item img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* FAQ Section */
+.faq {
+  max-width: 800px;
+  margin: auto;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+}
+
+.faq-item h4 {
+  color: #2c7a7b;
+  cursor: pointer;
+}
+
+.faq-item p {
+  display: none;
+  margin-top: 10px;
+  background: #edf2f7;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* JS Toggle Support */
+.faq-item.active p {
+  display: block;
+}
+
+/* Loop CTA */
+.loop-cta {
+  text-align: center;
+  background-color: #2c7a7b;
+  color: #fff;
+  padding: 50px 20px;
+}
+
+.loop-cta a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #fff;
+  background-color: #38b2ac;
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+}
+
+.loop-cta a:hover {
+  background-color: #319795;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2em;
+  }
+
+  .carousel-item {
+    min-width: 90%;
+  }
+}
+.eco-banner {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.overlay-text {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+}
