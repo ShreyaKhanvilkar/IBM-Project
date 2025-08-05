@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wildlife Donation Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            fadeIn: 'fadeIn 1s ease-in-out',
+            float: 'float 3s ease-in-out infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0, transform: 'translateY(20px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-green-50 font-sans text-gray-800">
+
+  <!-- Hero Section -->
+  <section class="bg-green-200 py-24 px-6 text-center relative overflow-hidden">
+    <div class="animate-fadeIn">
+      <h1 class="text-5xl md:text-6xl font-bold text-green-900 mb-4">🐾 Protect India's Wildlife</h1>
+      <p class="text-lg max-w-xl mx-auto text-green-800">Denote & Start your conservation journey.</p>
+      <a href="#help" class="mt-8 inline-block px-6 py-3 bg-green-800 text-white rounded-full text-lg hover:bg-green-700 transition">See How You Can Help</a>
+    </div>
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Paw Print" class="absolute w-20 top-4 left-6 animate-float opacity-30">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Paw Print" class="absolute w-20 bottom-4 right-6 animate-float opacity-30">
+  </section>
+
+
+<section class="bg-white py-16 px-6 md:px-20 text-gray-800">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-4xl md:text-5xl font-bold text-green-700 mb-6">🏠 Rehome Your Animal</h2>
+    <p class="text-lg md:text-xl text-gray-600 mb-10">
+      Unable to care for your rescued or wild animal? We're here to help.
+      Rehoming with us ensures the animal is placed in a safe, ethical, and eco-appropriate environment.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-10 items-center">
+      <!-- Image or Illustration -->
+      <img src="rehome.webp" alt="Rehoming Animal" class="rounded-lg shadow-xl w-full h-auto object-cover">
+
+      <!-- Content -->
+      <div class="text-left space-y-6">
+        <h3 class="text-2xl font-semibold text-green-600">How It Works:</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>Fill out a rehoming request form</li>
+          <li>Our vet and care team assess the animal’s health and habitat needs</li>
+          <li>We coordinate safe transportation to our partner sanctuaries</li>
+          <li>You’ll receive updates on the animal’s new home</li>
+        </ul>
+
+           <a href="#donate" class="inline-block mt-4 px-6 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">Start Rehoming Process</a>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Fund or Help the Organization Section -->
+  <section id="fund" class="py-20 px-6 bg-gray-100 text-center">
+    <div class="max-w-4xl mx-auto animate-fadeIn">
+      <h2 class="text-4xl font-bold text-green-700 mb-4">Support Our Mission</h2>
+      <p class="text-lg text-gray-700 mb-6">Your contribution helps us run rescue operations, support conservation research, and maintain safe habitats for endangered species. We rely on generous supporters like you to continue our mission.</p>
+      <div class="flex flex-col md:flex-row justify-center gap-6">
+        <a href="#donate" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition font-semibold">Make a Donation</a>
+        <a href="#volunteer" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition font-semibold">Become a Volunteer</a>
+        <a href="#partner" class="bg-yellow-500 text-white px-6 py-3 rounded hover:bg-yellow-600 transition font-semibold">Partner With Us</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray
+  <!-- Donation Form Section -->
+  <section class="py-20 px-6 bg-green-50">
+    <div class="max-w-2xl mx-auto animate-fadeIn">
+      <h2 class="text-4xl font-bold text-center text-green-800 mb-6">Make a Donation</h2>
+      <form class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <input type="text" placeholder="Full Name" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input type="email" placeholder="Email Address" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input type="number" placeholder="Donation Amount (INR)" min="1" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <select class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+          <option>Choose a Purpose</option>
+          <option>Rehome an Animal</option>
+          <option>Support Recovery</option>
+          <option>Fund Habitat Protection</option>
+          <option>Sponsor Rehabilitation</option>
+          <option>Education & Awareness</option>
+          <option>General Donation</option>
+        </select>
+        <textarea rows="3" placeholder="Message (optional)" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition text-lg font-semibold">Donate Now</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-600 py-8 px-4">
+    © 2025 Wildlife Conservation India. Every donation makes a difference. 🐘🌿
+  </footer>
+
+</body>
+</html>
